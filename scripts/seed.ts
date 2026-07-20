@@ -8,10 +8,10 @@ import { COLLECTIONS } from "../src/types/firestore";
 import { FieldValue } from "firebase-admin/firestore";
 
 const categories = [
-  { id: "cat-gowns", slug: "gowns", name: "Gowns", image: "/images/cat-gowns.jpg", order: 1 },
-  { id: "cat-sarees", slug: "sarees", name: "Sarees", image: "/images/cat-sarees.jpg", order: 2 },
-  { id: "cat-coords", slug: "co-ords", name: "Co-ords", image: "/images/cat-coords.jpg", order: 3 },
-  { id: "cat-jackets", slug: "jackets", name: "Jackets", image: "/images/cat-jackets.jpg", order: 4 },
+  { id: "cat-gowns", slug: "gowns", name: "Gowns", image: "/images/cat-gowns.png", order: 1 },
+  { id: "cat-sarees", slug: "sarees", name: "Sarees", image: "/images/cat-sarees.png", order: 2 },
+  { id: "cat-coords", slug: "co-ords", name: "Co-ords", image: "/images/cat-coords.png", order: 3 },
+  { id: "cat-jackets", slug: "jackets", name: "Jackets", image: "/images/cat-jackets.png", order: 4 },
 ];
 
 const products = [
@@ -24,7 +24,7 @@ const products = [
     washCare: "Dry clean only",
     categoryId: "cat-gowns",
     collectionIds: [],
-    images: ["/images/placeholder-1.jpg"],
+    images: ["/images/placeholder-1.png"],
     basePrice: 24500,
     tags: ["gown", "silk", "new"],
     isFeatured: true,
@@ -40,7 +40,7 @@ const products = [
     washCare: "Dry clean only",
     categoryId: "cat-coords",
     collectionIds: [],
-    images: ["/images/placeholder-2.jpg"],
+    images: ["/images/placeholder-2.png"],
     basePrice: 31200,
     tags: ["co-ord", "embroidered", "new"],
     isFeatured: true,
@@ -56,7 +56,7 @@ const products = [
     washCare: "Dry clean recommended",
     categoryId: "cat-sarees",
     collectionIds: [],
-    images: ["/images/placeholder-5.jpg"],
+    images: ["/images/placeholder-5.png"],
     basePrice: 21800,
     tags: ["saree", "bandhani", "bestseller"],
     isFeatured: false,
@@ -72,7 +72,7 @@ const products = [
     washCare: "Dry clean only",
     categoryId: "cat-jackets",
     collectionIds: [],
-    images: ["/images/placeholder-6.jpg"],
+    images: ["/images/placeholder-6.png"],
     basePrice: 27600,
     tags: ["jacket", "velvet", "bestseller"],
     isFeatured: false,

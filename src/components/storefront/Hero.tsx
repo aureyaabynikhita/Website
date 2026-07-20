@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="relative h-[85vh] min-h-[560px] w-full overflow-hidden bg-beige">
       <Image
-        src="/images/hero-main.jpg"
+        src="/images/hero-main.png"
         alt="AUREYAA — New Season Collection"
         fill
         priority
