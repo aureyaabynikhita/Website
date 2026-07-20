@@ -45,7 +45,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs tracking-[0.12em] uppercase text-charcoal/80 hover:text-burgundy transition-colors"
+              className="relative text-xs tracking-[0.12em] uppercase text-charcoal/80 hover:text-burgundy transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-left after:scale-x-0 after:bg-burgundy after:transition-transform after:duration-300 hover:after:scale-x-100"
             >
               {link.label}
             </Link>
@@ -65,7 +65,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs tracking-[0.12em] uppercase text-charcoal/80 hover:text-burgundy transition-colors"
+                className="relative text-xs tracking-[0.12em] uppercase text-charcoal/80 hover:text-burgundy transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:origin-left after:scale-x-0 after:bg-burgundy after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
                 {link.label}
               </Link>
