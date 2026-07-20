@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: PageProps) {
       "@type": "Offer",
       priceCurrency: "INR",
       price: product.basePrice,
-      availability: product.variants.some((v) => v.stock > 0)
+      availability: product.variants?.some((v) => v.stock > 0)
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
     },

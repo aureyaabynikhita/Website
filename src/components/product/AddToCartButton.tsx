@@ -9,7 +9,7 @@ import type { ProductDoc, ProductVariant } from "@/types/firestore";
 export function AddToCartButton({ product }: { product: ProductDoc }) {
   const { addItem } = useCart();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
-    product.variants[0]
+    product.variants?.[0]
   );
   const [isAdding, setIsAdding] = useState(false);
 
@@ -33,11 +33,11 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
 
   return (
     <div className="space-y-6">
-      {product.variants.length > 1 && (
+      {product.variants?.length > 1 && (
         <div>
           <p className="text-xs tracking-[0.12em] uppercase text-charcoal/60 mb-3">Size</p>
           <div className="flex gap-2">
-            {product.variants.map((v) => (
+            {product.variants?.map((v) => (
               <button
                 key={v.id}
                 type="button"

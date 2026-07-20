@@ -19,7 +19,7 @@ export function CategoryFilterableGrid({ products }: { products: ProductDoc[] })
   const filtered = useMemo(() => {
     return products.filter((p) => {
       const sizeMatch =
-        selectedSizes.length === 0 || p.variants.some((v) => selectedSizes.includes(v.size));
+        selectedSizes.length === 0 || p.variants?.some((v) => selectedSizes.includes(v.size));
       const band = selectedPriceBand !== null ? PRICE_BANDS[selectedPriceBand] : null;
       const priceMatch =
         !band || (p.basePrice >= (band.min ?? 0) && p.basePrice <= (band.max ?? Infinity));
