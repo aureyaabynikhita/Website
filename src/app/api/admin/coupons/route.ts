@@ -23,8 +23,8 @@ export async function POST(request: Request) {
     minOrderValue: minOrderValue ? Number(minOrderValue) : undefined,
     maxDiscount: maxDiscount ? Number(maxDiscount) : undefined,
     usageLimit: usageLimit ? Number(usageLimit) : 0,
-    validFrom: Timestamp.fromDate(new Date(validFrom)),
-    validTill: Timestamp.fromDate(new Date(validTill)),
+    validFrom: Timestamp.fromDate(new Date(validFrom)) as any,
+    validTill: Timestamp.fromDate(new Date(validTill)) as any,
     isActive: true,
   });
 
