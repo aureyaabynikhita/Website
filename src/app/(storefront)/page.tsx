@@ -22,11 +22,22 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [newArrivals, bestSellers, categories] = await Promise.all([
-    getNewArrivals(),
-    getBestSellers(),
-    getAllCategories(),
-  ]);
+  let newArrivals: any[] = [];
+  let bestSellers: any[] = [];
+  let categories: any[] = [];
+
+  try {
+    const [newArrivalsRes, bestSellersRes, categoriesRes] = await Promise.all([
+      getNewArrivals(),
+      getBestSellers(),
+      getAllCategories(),
+    ]);
+    newArrivals = newArrivalsRes;
+    bestSellers = bestSellersRes;
+    categories = categoriesRes;
+  } catch (error) {
+    console.error("Failed to fetch home page data from Firebase:", error);
+  }
 
   return (
     <>
