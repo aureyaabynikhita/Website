@@ -5,7 +5,7 @@ let stripeClient: Stripe | null = null;
 function getStripe(): Stripe {
   if (!stripeClient) {
     stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-09-30.acacia",
+      apiVersion: "2024-09-30.acacia" as any,
     });
   }
   return stripeClient;
