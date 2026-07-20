@@ -21,7 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const p = d.data() as ProductDoc;
       return {
         url: `${SITE_URL}/product/${p.slug}`,
-        lastModified: p.updatedAt?.toDate?.() ?? new Date(),
+        lastModified: p.updatedAt?.toDate
+          ? p.updatedAt.toDate()
+          : p.updatedAt
+            ? new Date(p.updatedAt as any)
+            : new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.8,
       };

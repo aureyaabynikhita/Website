@@ -8,6 +8,15 @@ import { COLLECTIONS, type ProductDoc } from "@/types/firestore";
  * directly inside the component that needs them (Phase 6).
  */
 
+function serializeProduct(doc: any): any {
+  if (!doc) return doc;
+  return {
+    ...doc,
+    createdAt: doc.createdAt?.toDate ? doc.createdAt.toDate().toISOString() : doc.createdAt,
+    updatedAt: doc.updatedAt?.toDate ? doc.updatedAt.toDate().toISOString() : doc.updatedAt,
+  };
+}
+
 export async function getFeaturedProducts(limit = 8): Promise<ProductDoc[]> {
   try {
     const snap = await adminDb
@@ -16,7 +25,7 @@ export async function getFeaturedProducts(limit = 8): Promise<ProductDoc[]> {
       .where("isFeatured", "==", true)
       .limit(limit)
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in getFeaturedProducts:", error);
     return [];
@@ -32,7 +41,7 @@ export async function getNewArrivals(limit = 8): Promise<ProductDoc[]> {
       .orderBy("createdAt", "desc")
       .limit(limit)
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in getNewArrivals:", error);
     return [];
@@ -47,7 +56,7 @@ export async function getBestSellers(limit = 8): Promise<ProductDoc[]> {
       .where("isBestSeller", "==", true)
       .limit(limit)
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in getBestSellers:", error);
     return [];
@@ -63,7 +72,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDoc | null>
       .limit(1)
       .get();
     if (snap.empty) return null;
-    return snap.docs[0]!.data() as ProductDoc;
+    return serializeProduct(snap.docs[0]!.data()) as ProductDoc;
   } catch (error) {
     console.error("Error in getProductBySlug:", error);
     return null;
@@ -81,7 +90,7 @@ export async function getProductsByCategory(
       .where("categoryId", "==", categoryId)
       .limit(limit)
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in getProductsByCategory:", error);
     return [];
@@ -96,7 +105,7 @@ export async function getProductsByIds(ids: string[]): Promise<ProductDoc[]> {
       .collection(COLLECTIONS.products)
       .where("id", "in", ids.slice(0, 30))
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in getProductsByIds:", error);
     return [];
@@ -117,7 +126,7 @@ export async function searchProducts(queryText: string, limit = 20): Promise<Pro
       .where("tags", "array-contains", lower)
       .limit(limit)
       .get();
-    return snap.docs.map((d) => d.data() as ProductDoc);
+    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
   } catch (error) {
     console.error("Error in searchProducts:", error);
     return [];
