@@ -1,0 +1,138 @@
+rules_version = '2';
+
+// AUREYAA Firestore Security Rules
+// Principle: customers can read published/public data and manage only
+// their OWN user-scoped documents. All writes to catalog/order-state/admin
+// data go through Cloud Functions / API routes using firebase-admin,
+// which bypass these rules — so business logic (stock checks, payment
+// verification) never has to be re-implemented in rules.
+
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function isOwner(userId) {
+  return isSignedIn() && request.auth.uid == userId;
+}
+
+function isAdmin() {
+  return isSignedIn() &&
+    exists(/databases/$(database)/documents/admin/$(request.auth.uid));
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true; // public catalog
+      allow write: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /collections/{collectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lookbooks/{lookbookId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /cms_pages/{pageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin() ||
+        (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() || true; // guest checkout allowed via API route
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /wishlist/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /cart/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /coupons/{couponId} {
+      allow read: if isSignedIn(); // needed client-side to validate at checkout
+      allow write: if isAdmin();
+    }
+
+    match /inventory/{sku} {
+      allow read: if true;
+      allow write: if isAdmin(); // real stock decrements happen server-side
+    }
+
+    match /returns/{returnId} {
+      allow read: if isAdmin() ||
+        (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
+    }
+
+    match /refunds/{refundId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if isAdmin();
+      allow write: if false; // written only via Admin SDK from webhook handlers
+    }
+
+    match /shipping/{pincode} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read, update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if isAdmin();
+    }
+
+    match /newsletter/{subscriberId} {
+      allow read: if isAdmin();
+      allow create: if true; // public signup form
+      allow update, delete: if isAdmin();
+    }
+
+    match /admin/{adminId} {
+      allow read: if isOwner(adminId);
+      allow write: if false; // managed via Firebase console / server-side script only
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
