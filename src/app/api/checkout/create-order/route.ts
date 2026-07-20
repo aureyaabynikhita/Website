@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       userId: session?.uid ?? null,
       guestEmail: session ? undefined : data.guestEmail,
       items: data.items,
-      shippingAddress: data.shippingAddress,
+      shippingAddress: data.shippingAddress as any,
       couponCode: data.couponCode,
       giftNote: data.giftNote,
       isGiftWrapped: data.isGiftWrapped,
