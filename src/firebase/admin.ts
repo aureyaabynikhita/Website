@@ -12,8 +12,17 @@ import { getAuth } from "firebase-admin/auth";
  *   FIREBASE_CLIENT_EMAIL
  *   FIREBASE_PRIVATE_KEY   (keep the \n escapes — see .env.example)
  */
+function getAdminApp(): App {
+  if (getApps().length) return getApps()[0]!;
 
-
+  return initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
+  });
+}
 
 const adminApp = getAdminApp();
 export const adminDb = getFirestore(adminApp);
