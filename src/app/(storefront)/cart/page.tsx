@@ -95,9 +95,11 @@ export default function CartPage() {
             <span>{formatPrice(subtotal)}</span>
           </div>
           <p className="text-xs text-charcoal/50 mb-6">Shipping and taxes calculated at checkout.</p>
-          <Button className="w-full" size="lg" disabled>
-            Checkout (coming soon)
-          </Button>
+          <Link href="/checkout">
+            <Button className="w-full" size="lg">
+              Proceed to Checkout
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
