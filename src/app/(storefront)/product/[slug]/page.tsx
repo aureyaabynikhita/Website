@@ -70,7 +70,7 @@ export default async function ProductPage({ params }: PageProps) {
       />
 
       <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-        <ProductGallery images={product.images} title={product.title} />
+        <ProductGallery images={product.images} videoUrl={product.videoUrl} title={product.title} />
 
         <div>
           <p className="eyebrow mb-2">{product.categoryId.replace("cat-", "")}</p>
