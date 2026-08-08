@@ -37,6 +37,11 @@ export async function POST(request: Request) {
     }
 
     if (data.paymentMethod === "razorpay") {
+      if (!process.env.RAZORPAY_KEY_ID) {
+        return NextResponse.json({
+          error: "Razorpay Key ID is missing on the server. Please check your .env file and restart your local dev server (run: npm run dev again) to apply the keys."
+        }, { status: 500 });
+      }
       const rzpOrder = await createRazorpayOrder(order.total, order.orderId);
       return NextResponse.json({
         ok: true,
