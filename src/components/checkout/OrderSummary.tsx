@@ -39,7 +39,7 @@ export function OrderSummary({ items, subtotal, discount, shippingFee, tax }: Or
         )}
         <div className="flex justify-between">
           <span className="text-charcoal/60">Shipping</span>
-          <span>{shippingFee === null ? "—" : shippingFee === 0 ? "Free" : formatPrice(shippingFee)}</span>
+          <span className="text-success font-semibold tracking-wider text-xs uppercase">Free (Complimentary)</span>
         </div>
         <div className="flex justify-between">
           <span className="text-charcoal/60">Tax</span>

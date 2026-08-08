@@ -13,7 +13,7 @@ export function DesignerStory() {
             alt="Nikhita Matania — Founder & Designer, AUREYAA"
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         </FadeIn>
 

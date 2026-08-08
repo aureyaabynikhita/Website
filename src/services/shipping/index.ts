@@ -24,7 +24,7 @@ export async function checkPincodeServiceability(
   pincode: string,
   subtotal: number
 ): Promise<ShippingCheckResult> {
-  const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING_FEE;
+  const shippingFee = 0;
 
   try {
     const shiprocket = await checkShiprocketServiceability(PICKUP_PINCODE, pincode);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Heart, Search, ShoppingBag, User, Menu, X } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 const NAV_LINKS = [
   { label: "New Arrivals", href: "/category/new-arrivals" },
@@ -20,6 +21,9 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { items } = useCart();
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -29,8 +33,8 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-charcoal/10 bg-ivory/95 backdrop-blur-sm">
-      <div className="section-container flex h-20 items-center justify-between">
+    <header className="sticky top-0 z-50 border-b border-charcoal/10 bg-ivory/95 backdrop-blur-sm shadow-sm transition-all duration-300">
+      <div className="section-container flex h-26 md:h-30 items-center justify-between">
         <button
           type="button"
           className="lg:hidden"
@@ -54,12 +58,12 @@ export function Header() {
 
         <Link
           href="/"
-          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-12"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-20"
         >
           <img
             src="/images/logo.png"
             alt="AUREYAA Logo"
-            className="h-10 md:h-12 w-auto object-contain"
+            className="h-16 md:h-20 w-auto object-contain"
           />
         </Link>
 
@@ -89,8 +93,13 @@ export function Header() {
           <Link href="/wishlist" aria-label="Wishlist" className="hover:text-burgundy transition-colors">
             <Heart size={19} />
           </Link>
-          <Link href="/cart" aria-label="Cart" className="hover:text-burgundy transition-colors">
-            <ShoppingBag size={19} />
+          <Link href="/cart" aria-label="Cart" className="hover:text-burgundy transition-colors relative p-1 flex items-center justify-center">
+            <ShoppingBag size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-burgundy text-[9px] font-bold text-ivory">
+                {cartCount}
+              </span>
+            )}
           </Link>
         </div>
       </div>

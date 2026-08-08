@@ -13,6 +13,7 @@ import { RazorpayCheckoutButton } from "@/components/checkout/RazorpayCheckoutBu
 import { CashfreeCheckoutButton } from "@/components/checkout/CashfreeCheckoutButton";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 type PaymentMethod = "razorpay" | "cod";
 
@@ -37,7 +38,10 @@ export default function CheckoutPage() {
     amount: number;
     keyId: string;
   } | null>(null);
-
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [userEnteredOtp, setUserEnteredOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
 
   const subtotal = cartSubtotal(items);
   const tax = Math.round((subtotal - discount) * 0.05);
@@ -56,6 +60,49 @@ export default function CheckoutPage() {
     );
   }
 
+  async function executeOrderCreation() {
+    setIsPlacingOrder(true);
+    try {
+      const res = await fetch("/api/checkout/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guestEmail: firebaseUid ? undefined : guestEmail,
+          items,
+          shippingAddress: { ...address, country: "India" },
+          couponCode: couponCode ?? undefined,
+          giftNote: giftWrap ? giftNote : undefined,
+          isGiftWrapped: giftWrap,
+          paymentMethod,
+        }),
+      });
+      const data = await res.json();
+      setIsPlacingOrder(false);
+
+      if (!res.ok) {
+        toast.error(data.error?.formErrors?.[0] ?? data.error ?? "Couldn't place order.");
+        return;
+      }
+
+      if (!data.requiresPayment) {
+        router.push(`/checkout/confirmation/${data.orderId}`);
+        return;
+      }
+
+      if (data.gateway === "razorpay") {
+        setRazorpayData({
+          orderId: data.orderId,
+          gatewayOrderId: data.gatewayOrderId,
+          amount: data.amount,
+          keyId: data.keyId,
+        });
+      }
+    } catch (err) {
+      setIsPlacingOrder(false);
+      toast.error("Checkout failed");
+    }
+  }
+
   async function placeOrder() {
     if (!address) return;
     if (!firebaseUid && !guestEmail) {
@@ -63,42 +110,19 @@ export default function CheckoutPage() {
       return;
     }
 
-    setIsPlacingOrder(true);
-    const res = await fetch("/api/checkout/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        guestEmail: firebaseUid ? undefined : guestEmail,
-        items,
-        shippingAddress: { ...address, country: "India" },
-        couponCode: couponCode ?? undefined,
-        giftNote: giftWrap ? giftNote : undefined,
-        isGiftWrapped: giftWrap,
-        paymentMethod,
-      }),
-    });
-    const data = await res.json();
-    setIsPlacingOrder(false);
-
-    if (!res.ok) {
-      toast.error(data.error?.formErrors?.[0] ?? data.error ?? "Couldn't place order.");
-      return;
+    if (paymentMethod === "cod") {
+      // Generate a random 4-digit code
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      setGeneratedOtp(otp);
+      setUserEnteredOtp("");
+      setOtpError("");
+      
+      // Simulate SMS transmission via a prominent toast alert
+      toast.success(`[SMS Gateway] Order Verification OTP is: ${otp}`, { duration: 9000 });
+      setIsOtpModalOpen(true);
+    } else {
+      await executeOrderCreation();
     }
-
-    if (!data.requiresPayment) {
-      router.push(`/checkout/confirmation/${data.orderId}`);
-      return;
-    }
-
-    if (data.gateway === "razorpay") {
-      setRazorpayData({
-        orderId: data.orderId,
-        gatewayOrderId: data.gatewayOrderId,
-        amount: data.amount,
-        keyId: data.keyId,
-      });
-    }
-
   }
 
   return (
@@ -185,18 +209,24 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   {(
                     [
-                      { id: "razorpay", label: "Razorpay (Cards, UPI, Netbanking, Wallets)" },
-                      { id: "cod", label: "Cash on Delivery", disabled: shipping ? !shipping : false },
+                      { id: "razorpay", label: "Razorpay (Cards, UPI, Netbanking, Wallets)", disabled: false },
+                      { id: "cod", label: "Cash on Delivery", disabled: !firebaseUid || (shipping ? !shipping : false) },
                     ] as const
                   ).map((opt) => (
-                    <label key={opt.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label key={opt.id} className={cn("flex items-center gap-2 text-sm cursor-pointer", opt.disabled && "opacity-50 cursor-not-allowed")}>
                       <input
                         type="radio"
                         name="paymentMethod"
+                        disabled={opt.disabled}
                         checked={paymentMethod === opt.id}
                         onChange={() => setPaymentMethod(opt.id as PaymentMethod)}
                       />
-                      {opt.label}
+                      <span>{opt.label}</span>
+                      {opt.id === "cod" && !firebaseUid && (
+                        <span className="text-[10px] bg-burgundy/10 text-burgundy px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                          Login Required
+                        </span>
+                      )}
                     </label>
                   ))}
                 </div>
@@ -237,6 +267,60 @@ export default function CheckoutPage() {
           tax={tax}
         />
       </div>
+      {/* OTP Verification Modal */}
+      {isOtpModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/60 backdrop-blur-xs">
+          <div className="fixed inset-0" onClick={() => setIsOtpModalOpen(false)} />
+          
+          <div className="relative bg-ivory max-w-md w-full p-8 shadow-2xl z-10 border border-charcoal/10 text-center space-y-6">
+            <div className="space-y-2">
+              <h3 className="font-serif text-2xl text-charcoal">Verify Your Order</h3>
+              <p className="text-xs text-charcoal/60 leading-relaxed">
+                To confirm your Cash on Delivery request, please enter the 4-digit code sent to <strong className="text-charcoal font-sans">{address?.phone}</strong>.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                maxLength={4}
+                placeholder="Enter 4-Digit OTP"
+                value={userEnteredOtp}
+                onChange={(e) => {
+                  setUserEnteredOtp(e.target.value.replace(/\D/g, ""));
+                  setOtpError("");
+                }}
+                className="w-full text-center border border-charcoal/20 bg-transparent px-4 py-3 text-lg font-mono focus:border-burgundy focus:outline-none tracking-widest"
+              />
+              {otpError && <p className="text-xs text-error font-medium">{otpError}</p>}
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setIsOtpModalOpen(false)}
+                className="flex-1 py-3 text-center border border-charcoal/20 text-xs font-bold uppercase tracking-wider hover:border-charcoal transition-all text-charcoal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (userEnteredOtp === generatedOtp) {
+                    setIsOtpModalOpen(false);
+                    await executeOrderCreation();
+                  } else {
+                    setOtpError("Invalid verification code. Please enter the correct OTP.");
+                  }
+                }}
+                className="flex-1 py-3 text-center bg-burgundy text-ivory text-xs font-bold uppercase tracking-wider hover:bg-burgundy/90 transition-all shadow-sm"
+              >
+                Verify & Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

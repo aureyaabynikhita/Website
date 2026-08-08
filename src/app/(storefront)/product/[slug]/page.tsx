@@ -30,10 +30,61 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function ProductSpecsCard({ categoryId, color, fabric, wash }: { categoryId: string; color: string; fabric: string; wash: string }) {
+  const isSaree = categoryId.includes("saree");
+  const isSkirt = categoryId.includes("skirt");
+  const isCoord = categoryId.includes("coords");
+
+  const specs = [
+    { label: "Stitch", value: "Ready to Wear" },
+    { label: "Weave Pattern", value: "Regular Designer Weave" },
+    { label: "Fabric Details", value: fabric || "Premium Blended Fabric" },
+    { label: "Wash Care", value: wash || "Dry Clean Only" },
+    { label: "Styling Neck", value: isSaree ? "Chic Drape Saree Cut" : isCoord ? "Elegant Collar / Round" : "Modern Indo-Western" },
+    { label: "Color Way", value: color || "Original Premium" },
+  ];
+
+  return (
+    <div className="bg-charcoal/[0.02] border border-charcoal/5 p-5 rounded-md mb-8">
+      <h3 className="text-xs uppercase tracking-widest font-bold text-burgundy mb-4">Product Specifications</h3>
+      <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+        {specs.map((s, idx) => (
+          <div key={idx} className="space-y-1">
+            <p className="text-[10px] uppercase tracking-wider text-charcoal/50 font-semibold">{s.label}</p>
+            <p className="text-sm text-charcoal font-sans font-medium leading-tight">{s.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function renderFormattedDescription(text: string) {
   if (!text) return null;
   const paragraphs = text.split("\n\n");
   return paragraphs.map((p, index) => {
+    // Check if paragraph consists of bullet points
+    const lines = p.split("\n");
+    const isList = lines.every(line => {
+      const trimmed = line.trim();
+      return trimmed === "" || trimmed.startsWith("- ") || trimmed.startsWith("• ") || trimmed.startsWith("* ");
+    }) && lines.some(line => line.trim() !== "");
+    
+    if (isList) {
+      return (
+        <ul key={index} className="list-disc pl-5 mb-6 space-y-2">
+          {lines.filter(l => l.trim() !== "").map((line, i) => {
+            const cleanLine = line.trim().replace(/^[-•*]\s*/, "");
+            return (
+              <li key={i} className="text-sm text-charcoal/70 leading-relaxed font-sans">
+                {cleanLine}
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
     const parts = p.split(/(\*\*.*?\*\*)/g);
     return (
       <div key={index} className="mb-4 text-charcoal/70 leading-relaxed text-sm md:text-base">
@@ -45,7 +96,7 @@ function renderFormattedDescription(text: string) {
               </strong>
             );
           }
-          return <span key={i}>{part}</span>;
+          return <span key={i} className="font-sans text-sm text-charcoal/70">{part}</span>;
         })}
       </div>
     );
@@ -130,9 +181,16 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="border-t border-charcoal/10 pt-6 mb-8">
+          <div className="border-t border-charcoal/10 pt-6 mb-6">
             {renderFormattedDescription(product.description)}
           </div>
+
+          <ProductSpecsCard
+            categoryId={product.categoryId}
+            color={product.variants?.[0]?.color || "Default"}
+            fabric={product.fabricDetails}
+            wash={product.washCare}
+          />
 
           <AddToCartButton product={product} />
 
