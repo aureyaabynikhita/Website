@@ -5,7 +5,8 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { ProductDetailsAccordion } from "@/components/product/ProductDetailsAccordion";
 import { ProductGridSection } from "@/components/storefront/ProductGridSection";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
+import { Star } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: product.images[0] ? [product.images[0]] : [],
     },
   };
+}
+
+function renderFormattedDescription(text: string) {
+  if (!text) return null;
+  const paragraphs = text.split("\n\n");
+  return paragraphs.map((p, index) => {
+    const parts = p.split(/(\*\*.*?\*\*)/g);
+    return (
+      <div key={index} className="mb-4 text-charcoal/70 leading-relaxed text-sm md:text-base">
+        {parts.map((part, i) => {
+          if (part.startsWith("**") && part.endsWith("**")) {
+            return (
+              <strong key={i} className="font-semibold text-burgundy font-sans tracking-widest block mt-4 mb-2 text-xs uppercase">
+                {part.slice(2, -2)}
+              </strong>
+            );
+          }
+          return <span key={i}>{part}</span>;
+        })}
+      </div>
+    );
+  });
 }
 
 export default async function ProductPage({ params }: PageProps) {
@@ -73,23 +96,43 @@ export default async function ProductPage({ params }: PageProps) {
         <ProductGallery images={product.images} videoUrl={product.videoUrl} title={product.title} />
 
         <div>
-          <p className="eyebrow mb-2">{product.categoryId.replace("cat-", "")}</p>
+          <p className="eyebrow mb-2">{product.categoryId.replace("cat-", "").replace("-", " ")}</p>
           <h1 className="font-serif text-3xl md:text-4xl text-charcoal mb-3">{product.title}</h1>
-          <p className="text-xl text-charcoal/80 mb-1">
-            {formatPrice(product.basePrice)}
-            {product.compareAtPrice && (
-              <span className="ml-3 text-sm text-charcoal/40 line-through">
-                {formatPrice(product.compareAtPrice)}
-              </span>
-            )}
-          </p>
-          {product.ratingCount > 0 && (
-            <p className="text-sm text-charcoal/50 mb-6">
-              ★ {product.ratingAverage.toFixed(1)} ({product.ratingCount} reviews)
+          
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xl text-charcoal/80 font-medium">
+              {formatPrice(product.basePrice)}
+              {product.compareAtPrice && (
+                <span className="ml-3 text-sm text-charcoal/40 line-through">
+                  {formatPrice(product.compareAtPrice)}
+                </span>
+              )}
             </p>
-          )}
 
-          <p className="text-charcoal/70 leading-relaxed mb-8">{product.description}</p>
+            {product.ratingCount > 0 && (
+              <div className="flex items-center gap-1.5 bg-beige-light/30 px-3 py-1 rounded-full">
+                <div className="flex items-center text-gold">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      size={13}
+                      className={cn(
+                        "fill-current",
+                        i < Math.round(product.ratingAverage) ? "text-gold" : "text-charcoal/10 fill-none"
+                      )}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-charcoal/50 font-medium">
+                  {product.ratingAverage.toFixed(1)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-charcoal/10 pt-6 mb-8">
+            {renderFormattedDescription(product.description)}
+          </div>
 
           <AddToCartButton product={product} />
 
