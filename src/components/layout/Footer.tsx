@@ -42,7 +42,7 @@ export function Footer() {
                 <img
                   src="/images/logo.png"
                   alt="AUREYAA Logo"
-                  className="h-14 w-auto object-contain brightness-0 invert"
+                  className="h-14 w-auto object-contain"
                 />
               </Link>
             </div>

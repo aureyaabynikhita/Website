@@ -20,7 +20,7 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-top"
         />
       </motion.div>
       <div className="absolute inset-0 bg-charcoal/20" />
