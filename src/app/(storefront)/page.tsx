@@ -16,10 +16,7 @@ export const metadata: Metadata = {
     "Discover AUREYAA's edit of timeless silhouettes — gowns, sarees, co-ords and more, crafted for those who wear luxury quietly.",
 };
 
-// Rendered fresh on every request for now (product/category data changes via
-// admin panel). Revisit with ISR (`export const revalidate = 60`) once
-// traffic makes that worth the staleness trade-off.
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
   let newArrivals: any[] = [];

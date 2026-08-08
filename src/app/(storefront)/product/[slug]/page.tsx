@@ -8,7 +8,7 @@ import { ProductGridSection } from "@/components/storefront/ProductGridSection";
 import { formatPrice, cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

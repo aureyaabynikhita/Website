@@ -4,7 +4,7 @@ import { getCategoryBySlug } from "@/services/categories";
 import { getProductsByCategory, getNewArrivals, getBestSellers } from "@/services/products";
 import { CategoryFilterableGrid } from "@/components/storefront/CategoryFilterableGrid";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
