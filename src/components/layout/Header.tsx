@@ -58,7 +58,7 @@ export function Header() {
 
         <Link
           href="/"
-          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-20"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-20 z-20"
         >
           <img
             src="/images/logo.png"
@@ -107,7 +107,7 @@ export function Header() {
       {/* Search overlay */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 bg-ivory">
-          <div className="section-container flex h-20 items-center gap-4">
+          <div className="section-container flex h-26 items-center gap-4">
             <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-3">
               <Search size={20} className="text-charcoal/40" />
               <input
@@ -129,12 +129,12 @@ export function Header() {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-ivory lg:hidden">
-          <div className="section-container flex h-20 items-center justify-between">
-            <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center h-10">
+          <div className="section-container flex h-26 items-center justify-between border-b border-charcoal/10">
+            <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center h-16">
               <img
                 src="/images/logo.png"
                 alt="AUREYAA Logo"
-                className="h-8 w-auto object-contain"
+                className="h-12 w-auto object-contain"
               />
             </Link>
             <button type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">
