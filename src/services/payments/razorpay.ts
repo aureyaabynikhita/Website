@@ -2,9 +2,19 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 
 function getClient(): Razorpay {
+  const key_id = process.env.RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+  
+  if (!key_id || !key_secret) {
+    console.error("CRITICAL: Razorpay environment variables are undefined! Please make sure .env is populated and restart the Next.js server.", {
+      RAZORPAY_KEY_ID: key_id || "MISSING",
+      RAZORPAY_KEY_SECRET: key_secret ? "PRESENT" : "MISSING"
+    });
+  }
+
   return new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    key_id: key_id!,
+    key_secret: key_secret!,
   });
 }
 

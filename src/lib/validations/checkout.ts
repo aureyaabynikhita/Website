@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const checkoutAddressSchema = z.object({
-  label: z.string().default("Home"),
+  label: z.string().min(2, "Address label is required (e.g. Home, Work)"),
   line1: z.string().min(3, "Address is required"),
   line2: z.string().optional(),
   city: z.string().min(2, "City is required"),

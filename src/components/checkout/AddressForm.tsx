@@ -24,6 +24,7 @@ export function AddressForm({ onValidAddress, subtotal }: AddressFormProps) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutAddress>({ resolver: zodResolver(checkoutAddressSchema) });
 
@@ -32,6 +33,21 @@ export function AddressForm({ onValidAddress, subtotal }: AddressFormProps) {
   async function checkPincode() {
     if (!/^\d{6}$/.test(pincode ?? "")) return;
     setIsCheckingPincode(true);
+    
+    try {
+      const pinRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+      const pinData = await pinRes.json();
+      if (pinData && pinData[0] && pinData[0].Status === "Success") {
+        const postOffice = pinData[0].PostOffice?.[0];
+        if (postOffice) {
+          setValue("city", postOffice.District || postOffice.Block || "");
+          setValue("state", postOffice.State || "");
+        }
+      }
+    } catch (e) {
+      console.error("Pincode autocomplete failed:", e);
+    }
+
     const res = await fetch("/api/shipping/pincode-check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
