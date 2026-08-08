@@ -27,14 +27,22 @@ export default async function HomePage() {
   let categories: any[] = [];
 
   try {
-    const [newArrivalsRes, bestSellersRes, categoriesRes] = await Promise.all([
+    const { adminDb } = await import("@/firebase/admin");
+    const { COLLECTIONS } = await import("@/types/firestore");
+
+    const [newArrivalsRes, bestSellersRes, categoriesRes, productsSnap] = await Promise.all([
       getNewArrivals(),
       getBestSellers(),
       getAllCategories(),
+      adminDb.collection(COLLECTIONS.products).where("status", "==", "published").get(),
     ]);
+
     newArrivals = newArrivalsRes;
     bestSellers = bestSellersRes;
-    categories = categoriesRes;
+
+    // Filter categories to only those containing at least 1 published product
+    const activeCategoryIds = new Set(productsSnap.docs.map((doc) => doc.data().categoryId));
+    categories = categoriesRes.filter((cat) => activeCategoryIds.has(cat.id));
   } catch (error) {
     console.error("Failed to fetch home page data from Firebase:", error);
   }

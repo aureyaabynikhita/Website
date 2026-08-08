@@ -2,8 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { FadeIn } from "@/components/ui/FadeIn";
 import type { CategoryDoc } from "@/types/firestore";
+import { cn } from "@/lib/utils";
 
 export function ShopByCategory({ categories }: { categories: CategoryDoc[] }) {
+  // Compute column styling based on the active categories length to prevent orphaned layouts
+  const gridColsClass = 
+    categories.length === 3 
+      ? "grid-cols-1 sm:grid-cols-3" 
+      : categories.length === 5 
+        ? "grid-cols-2 lg:grid-cols-5" 
+        : "grid-cols-2 md:grid-cols-4";
+
   return (
     <section className="section-spacing bg-beige-light">
       <div className="section-container">
@@ -19,7 +28,7 @@ export function ShopByCategory({ categories }: { categories: CategoryDoc[] }) {
             No categories yet — run the seed script to preview this section.
           </p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className={cn("grid gap-6", gridColsClass)}>
             {categories.map((cat, i) => (
               <FadeIn key={cat.id} delay={i * 0.08}>
                 <Link href={`/category/${cat.slug}`} className="group block">
