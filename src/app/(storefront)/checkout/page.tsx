@@ -14,7 +14,7 @@ import { CashfreeCheckoutButton } from "@/components/checkout/CashfreeCheckoutBu
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-type PaymentMethod = "razorpay" | "cashfree" | "cod";
+type PaymentMethod = "razorpay" | "cod";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     amount: number;
     keyId: string;
   } | null>(null);
-  const [cashfreeSessionId, setCashfreeSessionId] = useState<string | null>(null);
+
 
   const subtotal = cartSubtotal(items);
   const tax = Math.round((subtotal - discount) * 0.05);
@@ -98,9 +98,7 @@ export default function CheckoutPage() {
         keyId: data.keyId,
       });
     }
-    if (data.gateway === "cashfree") {
-      setCashfreeSessionId(data.paymentSessionId);
-    }
+
   }
 
   return (
@@ -188,7 +186,6 @@ export default function CheckoutPage() {
                   {(
                     [
                       { id: "razorpay", label: "Razorpay (Cards, UPI, Netbanking, Wallets)" },
-                      { id: "cashfree", label: "Cashfree" },
                       { id: "cod", label: "Cash on Delivery", disabled: shipping ? !shipping : false },
                     ] as const
                   ).map((opt) => (
@@ -205,7 +202,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {!razorpayData && !cashfreeSessionId && (
+              {!razorpayData && (
                 <Button
                   className="w-full"
                   size="lg"
@@ -227,7 +224,7 @@ export default function CheckoutPage() {
                   customerPhone={address.phone}
                 />
               )}
-              {cashfreeSessionId && <CashfreeCheckoutButton paymentSessionId={cashfreeSessionId} />}
+
             </div>
           )}
         </div>

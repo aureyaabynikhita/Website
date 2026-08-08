@@ -37,7 +37,11 @@ function getAdminApp(): App {
 
 export const adminDb = new Proxy({} as Firestore, {
   get(target, prop, receiver) {
-    const db = cachedDb || (cachedDb = getFirestore(getAdminApp()));
+    if (!cachedDb) {
+      cachedDb = getFirestore(getAdminApp());
+      cachedDb.settings({ ignoreUndefinedProperties: true });
+    }
+    const db = cachedDb;
     const value = Reflect.get(db, prop);
     if (typeof value === "function") {
       return value.bind(db);
