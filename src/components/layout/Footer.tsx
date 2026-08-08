@@ -37,10 +37,13 @@ export function Footer() {
       <div className="section-container py-16 md:py-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
-            <p className="font-serif text-2xl tracking-[0.15em] text-ivory">AUREYAA</p>
-            <p className="mt-2 text-xs text-beige/70 tracking-[0.1em] uppercase">
-              by Nikhita Matania
-            </p>
+            <div className="flex items-center h-12 mb-2">
+              <img
+                src="/images/logo.png"
+                alt="AUREYAA Logo"
+                className="h-10 w-auto object-contain brightness-0 invert"
+              />
+            </div>
             <div className="flex gap-4 mt-6">
               <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors">
                 <Instagram size={18} />

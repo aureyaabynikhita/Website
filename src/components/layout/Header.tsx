@@ -54,9 +54,13 @@ export function Header() {
 
         <Link
           href="/"
-          className="font-serif text-2xl md:text-3xl tracking-[0.15em] text-burgundy absolute left-1/2 -translate-x-1/2"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-12"
         >
-          AUREYAA
+          <img
+            src="/images/logo.png"
+            alt="AUREYAA Logo"
+            className="h-10 md:h-12 w-auto object-contain"
+          />
         </Link>
 
         <div className="flex items-center gap-5">
@@ -117,7 +121,13 @@ export function Header() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-ivory lg:hidden">
           <div className="section-container flex h-20 items-center justify-between">
-            <span className="font-serif text-2xl text-burgundy">AUREYAA</span>
+            <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center h-10">
+              <img
+                src="/images/logo.png"
+                alt="AUREYAA Logo"
+                className="h-8 w-auto object-contain"
+              />
+            </Link>
             <button type="button" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">
               <X size={22} />
             </button>
