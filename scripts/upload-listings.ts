@@ -5,7 +5,6 @@ import fs from "fs";
 import path from "path";
 import { adminDb } from "../src/firebase/admin";
 import { COLLECTIONS } from "../src/types/firestore";
-import { getStorage } from "firebase-admin/storage";
 import { FieldValue } from "firebase-admin/firestore";
 
 const LISTINGS_DIR = "c:\\Users\\lenovo\\Downloads\\Listings";
@@ -184,39 +183,20 @@ function generateDescription(name: string, category: string, color: string): str
   }
 }
 
-async function uploadFile(bucket: any, localFilePath: string, destination: string): Promise<string> {
-  const fileExtension = path.extname(localFilePath).toLowerCase();
-  let contentType = "image/jpeg";
-  if (fileExtension === ".png") contentType = "image/png";
-  if (fileExtension === ".mp4") contentType = "video/mp4";
-  if (fileExtension === ".webm") contentType = "video/webm";
-  if (fileExtension === ".mov") contentType = "video/quicktime";
-
-  console.log(`Uploading ${localFilePath} to ${destination}...`);
-  await bucket.upload(localFilePath, {
-    destination,
-    public: true,
-    metadata: {
-      contentType,
-      cacheControl: "public, max-age=31536000",
-    }
-  });
-
-  // Make public explicitly to ensure accessibility
-  await bucket.file(destination).makePublic().catch((e: any) => {
-    console.warn(`Could not make file public: ${e.message}`);
-  });
-
-  return `https://storage.googleapis.com/${bucket.name}/${destination}`;
+function copyFileLocal(localFilePath: string, productId: string, fileName: string): string {
+  const destDir = path.join(process.cwd(), "public", "images", "products", productId);
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+  const destPath = path.join(destDir, fileName);
+  fs.copyFileSync(localFilePath, destPath);
+  return `/images/products/${productId}/${fileName}`;
 }
 
 async function main() {
   // Touch adminDb to trigger initialization of the Firebase Admin App proxy
   const skirtCatRef = adminDb.collection(COLLECTIONS.categories).doc("cat-drape-skirts");
   const skirtCatSnap = await skirtCatRef.get();
-
-  const bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "aureyaa-website.firebasestorage.app";
-  const bucket = getStorage().bucket(bucketName);
 
   // 1. Ensure 'cat-drape-skirts' category exists in Firestore
   if (!skirtCatSnap.exists) {
@@ -232,7 +212,7 @@ async function main() {
     });
   }
 
-  // 2. Process and Upload Products
+  // 2. Process and Copy Products
   for (const item of productsToUpload) {
     const slug = item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const productId = `prod-${slug}`;
@@ -250,17 +230,16 @@ async function main() {
     for (const file of files) {
       const filePath = path.join(folderPath, file);
       const isVideo = [".mp4", ".mov", ".webm"].includes(path.extname(file).toLowerCase());
-      const destinationPath = `products/${productId}/${file}`;
       
       try {
-        const publicUrl = await uploadFile(bucket, filePath, destinationPath);
+        const relativeUrl = copyFileLocal(filePath, productId, file);
         if (isVideo) {
-          videoUrl = publicUrl;
+          videoUrl = relativeUrl;
         } else {
-          imageUrls.push(publicUrl);
+          imageUrls.push(relativeUrl);
         }
       } catch (err: any) {
-        console.error(`Error uploading file ${file}:`, err.message);
+        console.error(`Error copying file ${file}:`, err.message);
       }
     }
 
