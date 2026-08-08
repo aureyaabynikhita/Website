@@ -16,13 +16,24 @@ export function ProductCard({ product }: { product: ProductDoc }) {
   return (
     <Link href={`/product/${product.slug}`} className="group block">
       <div className="relative aspect-[3/4] overflow-hidden bg-beige">
-        <Image
-          src={product.images[0] ?? "/images/placeholder-1.jpg"}
-          alt={product.title}
-          fill
-          sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        />
+        {product.videoUrl ? (
+          <video
+            src={product.videoUrl}
+            muted
+            loop
+            playsInline
+            autoPlay
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={product.images[0] ?? "/images/placeholder-1.jpg"}
+            alt={product.title}
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        )}
         <button
           type="button"
           aria-label="Add to wishlist"

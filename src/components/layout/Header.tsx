@@ -34,7 +34,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-charcoal/10 bg-white backdrop-blur-sm shadow-sm transition-all duration-300">
-      <div className="section-container flex h-26 md:h-30 items-center justify-between">
+      <div className="section-container flex h-20 md:h-24 items-center justify-between">
         <button
           type="button"
           className="lg:hidden"
@@ -58,12 +58,12 @@ export function Header() {
 
         <Link
           href="/"
-          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-24 z-20"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-20 z-20"
         >
           <img
             src="/images/logo.png"
             alt="AUREYAA Logo"
-            className="h-24 md:h-28 w-auto object-contain"
+            className="h-18 md:h-22 w-auto object-contain"
           />
         </Link>
 

@@ -34,7 +34,7 @@ const FOOTER_COLUMNS = [
 export function Footer() {
   return (
     <footer className="bg-burgundy text-beige">
-      <div className="section-container py-16 md:py-20">
+      <div className="section-container py-8 md:py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center h-16 mb-2">
@@ -42,7 +42,7 @@ export function Footer() {
                 <img
                   src="/images/logo.png"
                   alt="AUREYAA Logo"
-                  className="h-14 w-auto object-contain"
+                  className="h-14 w-auto object-contain invert mix-blend-screen"
                 />
               </Link>
             </div>
@@ -85,7 +85,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 pt-6 border-t border-beige/15 flex flex-col md:flex-row justify-between gap-3 text-xs text-beige/60">
+        <div className="mt-8 pt-4 border-t border-beige/15 flex flex-col md:flex-row justify-between gap-3 text-xs text-beige/60">
           <p>© {new Date().getFullYear()} Aureyaa. All rights reserved.</p>
           <p>Crafted with quiet luxury in mind.</p>
         </div>
