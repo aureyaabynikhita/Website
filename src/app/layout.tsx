@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/components/shared/AuthProvider";
 import { AnalyticsScripts } from "@/components/shared/AnalyticsScripts";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -57,6 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>{children}</AuthProvider>
         <Toaster position="bottom-center" toastOptions={{ style: { fontSize: "14px" } }} />
         <AnalyticsScripts />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
