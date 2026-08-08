@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Instagram, Facebook, Youtube } from "lucide-react";
 
@@ -39,9 +40,11 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1 space-y-4">
             <div className="flex items-center h-16 mb-2">
               <Link href="/">
-                <img
+                <Image
                   src="/images/logo.png"
                   alt="AUREYAA Logo"
+                  width={200}
+                  height={80}
                   className="h-14 w-auto object-contain invert mix-blend-screen"
                 />
               </Link>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -60,9 +61,12 @@ export function Header() {
           href="/"
           className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center h-20 z-20"
         >
-          <img
+          <Image
             src="/images/logo.png"
             alt="AUREYAA Logo"
+            width={200}
+            height={80}
+            priority
             className="h-18 md:h-22 w-auto object-contain"
           />
         </Link>
