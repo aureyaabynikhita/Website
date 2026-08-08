@@ -7,6 +7,7 @@ import {
   updateProfile,
   RecaptchaVerifier,
   signInWithPhoneNumber,
+  sendPasswordResetEmail,
   type ConfirmationResult,
   type User as FirebaseUser,
 } from "firebase/auth";
@@ -109,4 +110,8 @@ export async function confirmOtp(
 export async function signOut(): Promise<void> {
   await firebaseSignOut(auth);
   await fetch("/api/auth/session", { method: "DELETE" });
+}
+
+export async function sendPasswordReset(email: string): Promise<void> {
+  await sendPasswordResetEmail(auth, email);
 }
