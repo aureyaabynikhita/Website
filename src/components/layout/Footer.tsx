@@ -36,15 +36,27 @@ export function Footer() {
     <footer className="bg-burgundy text-beige">
       <div className="section-container py-16 md:py-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center h-12 mb-2">
-              <img
-                src="/images/logo.png"
-                alt="AUREYAA Logo"
-                className="h-10 w-auto object-contain brightness-0 invert"
-              />
+          <div className="col-span-2 md:col-span-1 space-y-4">
+            <div className="flex items-center h-16 mb-2">
+              <Link href="/">
+                <img
+                  src="/images/logo.png"
+                  alt="AUREYAA Logo"
+                  className="h-14 w-auto object-contain brightness-0 invert"
+                />
+              </Link>
             </div>
-            <div className="flex gap-4 mt-6">
+            <div className="text-xs text-beige/70 leading-relaxed space-y-1">
+              <p className="font-semibold text-gold tracking-wider uppercase text-[10px]">Flagship Atelier</p>
+              <p>102, Premier Fashion Avenue,</p>
+              <p>Bandra West, Mumbai - 400050</p>
+            </div>
+            <div className="text-xs text-beige/70 leading-relaxed space-y-1">
+              <p className="font-semibold text-gold tracking-wider uppercase text-[10px]">Contact Us</p>
+              <p>Email: contact@aureyaa.in</p>
+              <p>Phone: +91 99999 88888</p>
+            </div>
+            <div className="flex gap-4 pt-2">
               <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors">
                 <Instagram size={18} />
               </a>
