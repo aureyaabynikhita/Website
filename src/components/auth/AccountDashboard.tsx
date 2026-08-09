@@ -216,9 +216,16 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
             {localProfile.displayName ? localProfile.displayName.charAt(0).toUpperCase() : "A"}
           </div>
           <div className="overflow-hidden">
-            <h2 className="font-serif text-md text-charcoal truncate">
-              {localProfile.displayName || "Aureyaa Customer"}
-            </h2>
+            <div className="flex items-center gap-1.5">
+              <h2 className="font-serif text-md text-charcoal truncate">
+                {localProfile.displayName || "Aureyaa Customer"}
+              </h2>
+              {localProfile.role !== "customer" && (
+                <span className="bg-gold/25 text-gold-dark text-[9px] uppercase tracking-wider px-1.5 py-0.5 font-bold font-sans rounded-sm shrink-0">
+                  {localProfile.role}
+                </span>
+              )}
+            </div>
             <p className="text-2xs text-charcoal/50 truncate">{localProfile.email}</p>
           </div>
         </div>
@@ -261,15 +268,25 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
                   Track status of your orders, manage saved addresses, and update security credentials.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  setActiveTab("profile");
-                  setIsEditingProfile(true);
-                }}
-                className="self-start md:self-auto border border-burgundy/30 text-burgundy hover:bg-burgundy hover:text-ivory px-4 py-2 text-2xs uppercase tracking-wider font-medium font-sans"
-              >
-                Edit Profile
-              </button>
+              <div className="flex flex-wrap gap-3 self-start md:self-auto">
+                {localProfile.role !== "customer" && (
+                  <a
+                    href="/admin/dashboard"
+                    className="border border-gold bg-gold hover:bg-gold-dark text-charcoal px-4 py-2.5 text-2xs uppercase tracking-wider font-semibold font-sans transition-all duration-300 flex items-center justify-center"
+                  >
+                    Admin Panel
+                  </a>
+                )}
+                <button
+                  onClick={() => {
+                    setActiveTab("profile");
+                    setIsEditingProfile(true);
+                  }}
+                  className="border border-burgundy/30 text-burgundy hover:bg-burgundy hover:text-ivory px-4 py-2.5 text-2xs uppercase tracking-wider font-medium font-sans transition-all duration-300"
+                >
+                  Edit Profile
+                </button>
+              </div>
             </div>
 
             {/* Quick Cards Grid */}
