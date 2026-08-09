@@ -30,7 +30,7 @@ async function ensureUserDoc(user: FirebaseUser): Promise<void> {
   } = {
     uid: user.uid,
     email: user.email ?? "",
-    phone: user.phoneNumber ?? undefined,
+    phone: user.phoneNumber ?? "",
     displayName: user.displayName ?? "AUREYAA Customer",
     role: "customer",
     addresses: [],
