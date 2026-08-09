@@ -34,12 +34,12 @@ export function Hero() {
         />
       </motion.div>
       <div className="absolute inset-0 bg-charcoal/20" />
-      <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-6">
+      <div className="relative z-10 flex h-full flex-col items-center justify-end md:justify-center text-center px-6 pb-12 md:pb-0">
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.215, 0.61, 0.355, 1] }}
-          className="eyebrow text-ivory/90 mb-4"
+          className="eyebrow text-ivory/90 mb-3 md:mb-4"
         >
           The New Season Edit
         </motion.p>
@@ -47,7 +47,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: [0.215, 0.61, 0.355, 1] }}
-          className="font-serif text-4xl md:text-6xl lg:text-display-xl text-ivory max-w-3xl leading-tight"
+          className="font-serif text-3xl md:text-6xl lg:text-display-xl text-ivory max-w-3xl leading-tight"
         >
           Timeless silhouettes,
           <br />
@@ -57,10 +57,12 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: [0.215, 0.61, 0.355, 1] }}
-          className="mt-8"
+          className="mt-6 md:mt-8"
         >
           <Link href="/category/new-arrivals">
-            <Button variant="secondary" size="lg">
+            <Button
+              className="bg-burgundy text-ivory hover:bg-burgundy-dark md:bg-gold md:text-charcoal md:hover:bg-gold-dark text-xs md:text-base px-6 py-3 md:px-8 md:py-4 border-0"
+            >
               Discover the Collection
             </Button>
           </Link>
