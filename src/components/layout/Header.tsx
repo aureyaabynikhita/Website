@@ -132,7 +132,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-white lg:hidden">
+        <div className="fixed inset-0 z-[999] w-screen h-screen bg-white lg:hidden" style={{ backgroundColor: 'white', opacity: 1 }}>
           <div className="section-container flex h-26 items-center justify-between border-b border-charcoal/10">
             <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center h-16">
               <Image

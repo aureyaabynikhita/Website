@@ -25,7 +25,7 @@ export function Hero() {
         />
         {/* Mobile Hero Image (Portrait Listing Photo) */}
         <Image
-          src="/images/products/prod-afreen-ivory-purple/0bcf5931-f594-4c88-94b5-fa94ab78f886.jpg"
+          src="/images/hero-mobile.png"
           alt="AUREYAA — New Season Collection Mobile"
           fill
           priority
