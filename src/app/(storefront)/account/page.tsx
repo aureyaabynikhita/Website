@@ -1,16 +1,19 @@
 import { getServerSession } from "@/lib/session";
-import { SignOutButton } from "@/components/auth/SignOutButton";
+import { getUserOrders } from "@/services/orders";
+import { AccountDashboard } from "@/components/auth/AccountDashboard";
+import { redirect } from "next/navigation";
 
 export default async function AccountPage() {
   const session = await getServerSession();
+  if (!session || !session.profile) {
+    redirect("/login?redirect=/account");
+  }
+
+  const orders = await getUserOrders(session.uid);
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="font-serif text-display-sm text-charcoal mb-2">
-        Welcome, {session?.profile?.displayName ?? "there"}
-      </h1>
-      <p className="text-charcoal/60 mb-8">{session?.profile?.email}</p>
-      <SignOutButton />
+    <div className="w-full">
+      <AccountDashboard profile={session.profile} orders={orders} />
     </div>
   );
 }

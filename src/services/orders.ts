@@ -162,3 +162,12 @@ export async function markOrderPaid(
 
   await batch.commit();
 }
+
+export async function getUserOrders(userId: string): Promise<OrderDoc[]> {
+  const snap = await adminDb
+    .collection(COLLECTIONS.orders)
+    .where("userId", "==", userId)
+    .orderBy("createdAt", "desc")
+    .get();
+  return snap.docs.map((d) => d.data() as OrderDoc);
+}
