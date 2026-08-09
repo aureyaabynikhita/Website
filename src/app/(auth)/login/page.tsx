@@ -15,11 +15,11 @@ export default function LoginPage() {
   return (
     <div>
       <h1 className="font-serif text-display-sm text-center text-charcoal mb-2">Sign In</h1>
-      <p className="text-center text-sm text-charcoal/60 mb-8">
+      <p className="text-center text-sm text-charcoal/60 mb-5">
         Welcome back to AUREYAA.
       </p>
 
-      <div className="flex border-b border-charcoal/10 mb-8">
+      <div className="flex border-b border-charcoal/10 mb-5">
         {(["email", "phone"] as const).map((t) => (
           <button
             key={t}
@@ -37,7 +37,7 @@ export default function LoginPage() {
 
       {tab === "email" ? <EmailLoginForm /> : <PhoneOtpForm />}
 
-      <div className="flex items-center gap-4 my-8">
+      <div className="flex items-center gap-4 my-4">
         <div className="h-px flex-1 bg-charcoal/10" />
         <span className="text-xs text-charcoal/40 uppercase tracking-wide">or</span>
         <div className="h-px flex-1 bg-charcoal/10" />
@@ -45,7 +45,7 @@ export default function LoginPage() {
 
       <GoogleAuthButton />
 
-      <p className="text-center text-sm text-charcoal/60 mt-8">
+      <p className="text-center text-sm text-charcoal/60 mt-5">
         New to AUREYAA?{" "}
         <Link href="/register" className="text-burgundy hover:underline">
           Create an account

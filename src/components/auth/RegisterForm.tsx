@@ -23,13 +23,23 @@ export function RegisterForm() {
     try {
       await registerWithEmail(data.email, data.password, data.displayName);
       window.location.href = "/account";
-    } catch {
-      setAuthError("Couldn't create your account. That email may already be in use.");
+    } catch (err: any) {
+      console.error("Registration error details:", err);
+      const code = err?.code || "";
+      if (code === "auth/email-already-in-use") {
+        setAuthError("This email address is already in use. Please sign in instead.");
+      } else if (code === "auth/operation-not-allowed") {
+        setAuthError("Email/Password Sign-In is disabled in the Firebase Console. Go to Authentication -> Sign-in Method and enable Email/Password.");
+      } else if (code === "auth/weak-password") {
+        setAuthError("Password is too weak. Please enter at least 6 characters.");
+      } else {
+        setAuthError(err?.message || "Couldn't create your account. Please try again.");
+      }
     }
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <Input
         id="displayName"
         label="Full Name"

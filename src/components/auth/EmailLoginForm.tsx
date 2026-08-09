@@ -46,7 +46,7 @@ export function EmailLoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <Input
         id="email"
         type="email"

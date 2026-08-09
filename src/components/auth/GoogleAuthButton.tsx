@@ -16,8 +16,18 @@ export function GoogleAuthButton() {
     try {
       await signInWithGoogle();
       window.location.href = "/account";
-    } catch {
-      setError("Google sign-in failed. Please try again.");
+    } catch (err: any) {
+      console.error("Google sign-in error details:", err);
+      const code = err?.code || "";
+      if (code === "auth/operation-not-allowed") {
+        setError("Google Sign-In is disabled in the Firebase Console. Go to Authentication -> Sign-in Method and enable Google.");
+      } else if (code === "auth/popup-blocked") {
+        setError("Sign-in popup was blocked by your browser. Please allow popups and try again.");
+      } else if (code === "auth/unauthorized-domain") {
+        setError("This domain is not whitelisted in Firebase. Please add this domain to the Authorized Domains list in Firebase Console.");
+      } else {
+        setError(err?.message || "Google sign-in failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
