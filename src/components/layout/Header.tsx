@@ -9,9 +9,9 @@ import { useCart } from "@/hooks/useCart";
 
 const NAV_LINKS = [
   { label: "New Arrivals", href: "/category/new-arrivals" },
-  { label: "Gowns", href: "/category/gowns" },
   { label: "Sarees", href: "/category/sarees" },
   { label: "Co-ords", href: "/category/co-ords" },
+  { label: "Drape Skirts", href: "/category/drape-skirts" },
   { label: "Lookbook", href: "/lookbook" },
   { label: "Journal", href: "/journal" },
 ];
@@ -132,12 +132,14 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-ivory lg:hidden">
+        <div className="fixed inset-0 z-50 bg-white lg:hidden">
           <div className="section-container flex h-26 items-center justify-between border-b border-charcoal/10">
             <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center h-16">
-              <img
+              <Image
                 src="/images/logo.png"
                 alt="AUREYAA Logo"
+                width={120}
+                height={48}
                 className="h-12 w-auto object-contain"
               />
             </Link>

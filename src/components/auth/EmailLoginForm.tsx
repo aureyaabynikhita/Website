@@ -26,7 +26,7 @@ export function EmailLoginForm() {
     setAuthError(null);
     try {
       await signInWithEmail(data.email, data.password);
-      router.push("/account");
+      window.location.href = "/account";
     } catch {
       setAuthError("Incorrect email or password.");
     }

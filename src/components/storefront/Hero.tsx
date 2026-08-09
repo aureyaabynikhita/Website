@@ -14,13 +14,23 @@ export function Hero() {
         transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
         className="absolute inset-0"
       >
+        {/* Desktop Hero Image */}
         <Image
           src="/images/hero-main.png"
           alt="AUREYAA — New Season Collection"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-top"
+          className="hidden md:block object-cover object-top"
+        />
+        {/* Mobile Hero Image (Portrait Listing Photo) */}
+        <Image
+          src="/images/products/prod-afreen-ivory-purple/0bcf5931-f594-4c88-94b5-fa94ab78f886.jpg"
+          alt="AUREYAA — New Season Collection Mobile"
+          fill
+          priority
+          sizes="100vw"
+          className="block md:hidden object-cover object-top"
         />
       </motion.div>
       <div className="absolute inset-0 bg-charcoal/20" />

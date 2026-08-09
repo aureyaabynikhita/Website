@@ -7,7 +7,7 @@ export function DesignerStory() {
   return (
     <section className="section-spacing section-container">
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-        <FadeIn className="relative aspect-[4/5] order-2 md:order-1">
+        <FadeIn className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-sm border border-charcoal/10 shadow-sm order-1">
           <Image
             src="/images/designer-portrait.jpg"
             alt="Nikhita Matania — Founder & Designer, AUREYAA"
@@ -17,7 +17,7 @@ export function DesignerStory() {
           />
         </FadeIn>
 
-        <FadeIn delay={0.1} className="order-1 md:order-2">
+        <FadeIn delay={0.1} className="order-2">
           <p className="eyebrow mb-4">The Designer</p>
           <h2 className="font-serif text-display-sm md:text-display-md text-charcoal mb-6 leading-snug">
             Every piece begins

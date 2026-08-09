@@ -22,7 +22,7 @@ export function RegisterForm() {
     setAuthError(null);
     try {
       await registerWithEmail(data.email, data.password, data.displayName);
-      router.push("/account");
+      window.location.href = "/account";
     } catch {
       setAuthError("Couldn't create your account. That email may already be in use.");
     }

@@ -5,21 +5,21 @@ import { FadeIn } from "@/components/ui/FadeIn";
 const JOURNAL_POSTS = [
   {
     id: "j1",
-    slug: "art-of-draping",
-    title: "The Art of the Modern Drape",
-    image: "/images/journal-1.jpg",
+    slug: "philosophy-of-quiet-luxury",
+    title: "The Philosophy of Quiet Luxury in Indo-Western Style",
+    image: "/images/products/prod-rooh-beige/bb9b9409-5484-4863-8a39-ffde0b674390.jpg",
   },
   {
     id: "j2",
-    slug: "fabric-guide",
-    title: "A Guide to Our Signature Fabrics",
-    image: "/images/journal-2.jpg",
+    slug: "caring-for-silks-zari",
+    title: "How to Care for Your Heirloom Silks and Zari",
+    image: "/images/products/prod-ada-cherry-red/63937eb0-57f7-4d07-a0b5-a9339c0d0228.jpg",
   },
   {
     id: "j3",
-    slug: "styling-festive-season",
-    title: "Styling for the Festive Season",
-    image: "/images/journal-3.jpg",
+    slug: "building-timeless-wardrobe",
+    title: "Minimalism: Building a Timeless Ethnic Wardrobe",
+    image: "/images/products/prod-naira-black/32f22b79-583c-4863-9d0a-ab930c12845c.jpg",
   },
 ];
 

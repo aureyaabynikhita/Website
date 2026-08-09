@@ -15,7 +15,7 @@ export function GoogleAuthButton() {
     setError(null);
     try {
       await signInWithGoogle();
-      router.push("/account");
+      window.location.href = "/account";
     } catch {
       setError("Google sign-in failed. Please try again.");
     } finally {
