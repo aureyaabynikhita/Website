@@ -9,7 +9,7 @@ export function DesignerStory() {
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         <FadeIn className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-sm border border-charcoal/10 shadow-sm order-1">
           <Image
-            src="/images/designer-portrait.jpg"
+            src="/images/founder-portrait.jpg"
             alt="Nikhita Matania — Founder & Designer, AUREYAA"
             fill
             sizes="(max-width: 768px) 100vw, 50vw"

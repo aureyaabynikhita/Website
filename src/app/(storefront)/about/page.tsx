@@ -67,7 +67,7 @@ export default function AboutPage() {
           
           <div className="relative aspect-[4/5] bg-beige overflow-hidden order-1 md:order-2">
             <Image
-              src="/images/designer-portrait.jpg"
+              src="/images/founder-portrait.jpg"
               alt="Nikhita Matania"
               fill
               className="object-cover object-top"

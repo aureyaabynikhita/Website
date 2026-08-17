@@ -42,9 +42,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     name: "AUREYAA",
     alternateName: "AUREYAA by Nikhita Matania",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    email: "aureyaabynikhita@gmail.com",
+    telephone: "+91-9137709400",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Shop No. G-21, Om Heera Panna Mall, Oshiwara",
+      addressLocality: "Jogeshwari West",
+      addressRegion: "Maharashtra",
+      postalCode: "400102",
+      addressCountry: "IN",
+    },
     sameAs: [
-      "https://instagram.com/aureyaa.official",
-      "https://facebook.com/aureyaa.official",
+      "https://instagram.com/aureyaabynikhita",
+      "https://wa.me/919137709400",
     ],
   };
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Facebook, Youtube } from "lucide-react";
+import { Instagram, MessageCircle } from "lucide-react";
 
 const FOOTER_COLUMNS = [
   {
@@ -50,24 +50,22 @@ export function Footer() {
               </Link>
             </div>
             <div className="text-xs text-beige/70 leading-relaxed space-y-1">
-              <p className="font-semibold text-gold tracking-wider uppercase text-[10px]">Flagship Atelier</p>
-              <p>102, Premier Fashion Avenue,</p>
-              <p>Bandra West, Mumbai - 400050</p>
+              <p className="font-semibold text-gold tracking-wider uppercase text-[10px]">Visit Us</p>
+              <p>Shop No. G-21, Om Heera Panna Mall,</p>
+              <p>Oshiwara, Jogeshwari West,</p>
+              <p>Mumbai – 400102</p>
             </div>
             <div className="text-xs text-beige/70 leading-relaxed space-y-1">
               <p className="font-semibold text-gold tracking-wider uppercase text-[10px]">Contact Us</p>
-              <p>Email: contact@aureyaa.in</p>
-              <p>Phone: +91 99999 88888</p>
+              <a href="mailto:aureyaabynikhita@gmail.com" className="hover:text-ivory transition-colors block">aureyaabynikhita@gmail.com</a>
+              <a href="tel:+919137709400" className="hover:text-ivory transition-colors block">+91 91377 09400</a>
             </div>
             <div className="flex gap-4 pt-2">
-              <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors">
+              <a href="https://instagram.com/aureyaabynikhita" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-gold transition-colors">
                 <Instagram size={18} />
               </a>
-              <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors">
-                <Facebook size={18} />
-              </a>
-              <a href="#" aria-label="YouTube" className="hover:text-gold transition-colors">
-                <Youtube size={18} />
+              <a href="https://wa.me/919137709400" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="hover:text-gold transition-colors">
+                <MessageCircle size={18} />
               </a>
             </div>
           </div>
