@@ -20,34 +20,32 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
 
   return (
     <Link href={`/product/${product.slug}`} className="group block text-left">
-      {/* Visual Image Container (Zara-style 3:4 aspect ratio) */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-beige/30">
+      {/* Visual Image Container with full-head headroom and luxury styling */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F4EDE4] border border-charcoal/5">
         {/* Primary Image */}
         <Image
           src={img1}
           alt={product.title}
           fill
           priority={priority}
-          quality={92}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className={`object-cover object-top transition-all duration-700 ease-out ${
+          className={`object-cover object-[center_top] transition-all duration-700 ease-out ${
             img2 ? "group-hover:opacity-0 group-hover:scale-105" : "group-hover:scale-105"
           }`}
         />
 
-        {/* Secondary Hover Image (Zara Lookbook Transition) */}
+        {/* Secondary Hover Image (Lookbook Angle) */}
         {img2 && (
           <Image
             src={img2}
             alt={`${product.title} Alternate View`}
             fill
-            quality={92}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover object-top absolute inset-0 opacity-0 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-105"
+            className="object-cover object-[center_top] absolute inset-0 opacity-0 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-105"
           />
         )}
 
-        {/* Top Badges */}
+        {/* Top Status Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
           {allOutOfStock ? (
             <span className="bg-charcoal/90 text-ivory text-[9px] font-sans tracking-[0.15em] uppercase px-2 py-0.5 font-semibold backdrop-blur-xs">
@@ -64,7 +62,7 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
           ) : null}
         </div>
 
-        {/* Wishlist Button */}
+        {/* Wishlist Heart Button */}
         <button
           type="button"
           aria-label="Add to wishlist"
@@ -77,7 +75,7 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
             }
             await toggle(product.id);
           }}
-          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ivory/80 backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-ivory hover:scale-110 shadow-xs"
+          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ivory/85 backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 hover:bg-ivory hover:scale-110 shadow-xs"
         >
           <Heart
             size={15}
@@ -87,14 +85,14 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
           />
         </button>
 
-        {/* Quick Size Pill Strip (Zara style hover drawer) */}
+        {/* Quick Size Pill Strip */}
         {availableSizes.length > 0 && !allOutOfStock && (
-          <div className="absolute bottom-0 inset-x-0 bg-ivory/95 backdrop-blur-sm py-2 px-3 flex items-center justify-center gap-2 translate-y-full opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 border-t border-charcoal/5">
+          <div className="absolute bottom-0 inset-x-0 bg-ivory/95 backdrop-blur-sm py-2 px-3 flex items-center justify-center gap-1.5 translate-y-full opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 border-t border-charcoal/5">
             <span className="text-[9px] uppercase tracking-widest text-charcoal/50 mr-1 font-semibold">Sizes:</span>
             {availableSizes.map((size) => (
               <span
                 key={size}
-                className="text-[10px] font-medium tracking-wider text-charcoal bg-beige/40 px-1.5 py-0.5 rounded-none border border-charcoal/10"
+                className="text-[10px] font-medium tracking-wider text-charcoal bg-beige/40 px-1.5 py-0.5 border border-charcoal/10"
               >
                 {size}
               </span>
@@ -103,7 +101,7 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
         )}
       </div>
 
-      {/* Product Information */}
+      {/* Product Title & Pricing */}
       <div className="mt-3.5 space-y-1">
         <h3 className="font-sans text-xs sm:text-sm text-charcoal tracking-wide line-clamp-1 group-hover:text-burgundy transition-colors font-normal">
           {product.title}
