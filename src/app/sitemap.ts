@@ -5,7 +5,7 @@ import { COLLECTIONS, type ProductDoc, type CategoryDoc } from "@/types/firestor
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticUrls = ["", "/about", "/contact", "/faqs", "/size-guide"].map((path) => ({
+  const staticUrls = ["", "/about", "/collections", "/lookbook", "/journal"].map((path) => ({
     url: `${SITE_URL}${path}`,
     changeFrequency: "monthly" as const,
     priority: path === "" ? 1 : 0.5,
