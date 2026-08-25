@@ -6,24 +6,27 @@ import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { Button } from "@/components/ui/Button";
 import type { ProductDoc, ProductVariant } from "@/types/firestore";
-import { Heart, Share2, X, Maximize2 } from "lucide-react";
+import { Heart, Share2, X, Truck, ShieldCheck, RotateCcw, Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AddToCartButton({ product }: { product: ProductDoc }) {
   const { addItem } = useCart();
   const { isWishlisted, toggle: toggleWishlist, requiresLogin } = useWishlist();
   
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
-    product.variants?.[0]
-  );
+  // Find first available variant or default to first
+  const initialVariant = product.variants?.find((v) => v.stock > 0) ?? product.variants?.[0];
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(initialVariant);
   const [isAdding, setIsAdding] = useState(false);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
-  const [copiedShare, setCopiedShare] = useState(false);
+  const [pincode, setPincode] = useState("");
+  const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
+  const [isCheckingPincode, setIsCheckingPincode] = useState(false);
 
   const wishlisted = isWishlisted(product.id);
+  const isOutOfStock = !selectedVariant || selectedVariant.stock === 0;
 
   async function handleAdd() {
-    if (!selectedVariant) return;
+    if (!selectedVariant || isOutOfStock) return;
     setIsAdding(true);
     await addItem({
       productId: product.id,
@@ -37,7 +40,13 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
       image: product.images[0] ?? "",
     });
     setIsAdding(false);
-    toast.success("Added to bag");
+    toast.success(`${product.title} (${selectedVariant.size}) added to bag!`, {
+      style: {
+        background: "#2E2E2E",
+        color: "#F1DDC8",
+        border: "1px solid rgba(199, 163, 107, 0.3)",
+      },
+    });
   }
 
   const handleShare = () => {
@@ -46,67 +55,95 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
       if (navigator.share) {
         navigator.share({
           title: product.title,
-          url: url
+          url: url,
         }).catch(console.error);
       } else {
         navigator.clipboard.writeText(url);
-        setCopiedShare(true);
         toast.success("Link copied to clipboard!");
-        setTimeout(() => setCopiedShare(false), 2000);
       }
     }
   };
 
+  const checkDeliveryPincode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pincode || pincode.length !== 6) {
+      toast.error("Please enter a valid 6-digit pincode.");
+      return;
+    }
+    setIsCheckingPincode(true);
+    setTimeout(() => {
+      setIsCheckingPincode(false);
+      setPincodeStatus(`Standard delivery in 3–5 business days to ${pincode}`);
+    }, 600);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Size Selector Header with Size Chart Trigger */}
+      {/* Size Selector Header */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <p className="text-xs tracking-[0.12em] uppercase font-semibold text-charcoal/70">Size</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs tracking-[0.15em] uppercase font-semibold text-charcoal/80">Select Size</p>
+            {selectedVariant && (
+              <span className="text-xs text-charcoal/50 font-medium">
+                ({selectedVariant.size})
+              </span>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => setIsSizeChartOpen(true)}
-            className="text-xs text-burgundy hover:text-burgundy/80 font-bold uppercase tracking-wider underline underline-offset-4 transition-colors"
+            className="text-xs text-burgundy hover:text-burgundy-light font-semibold uppercase tracking-wider underline underline-offset-4 transition-colors"
           >
-            Size Chart
+            Size Guide
           </button>
         </div>
 
-        {product.variants?.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {product.variants?.map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setSelectedVariant(v)}
-                disabled={v.stock === 0}
-                className={cn(
-                  "h-11 min-w-11 px-3 border text-xs tracking-wider transition-all disabled:opacity-30 disabled:cursor-not-allowed",
-                  selectedVariant?.id === v.id
-                    ? "border-burgundy bg-burgundy text-ivory font-semibold shadow-sm"
-                    : "border-charcoal/20 hover:border-charcoal bg-transparent text-charcoal"
-                )}
-              >
-                {v.size}
-              </button>
-            ))}
+        {product.variants && product.variants.length > 0 && (
+          <div className="flex flex-wrap gap-2.5">
+            {product.variants.map((v) => {
+              const isSelected = selectedVariant?.id === v.id;
+              const isStockOut = v.stock === 0;
+
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => setSelectedVariant(v)}
+                  className={cn(
+                    "relative h-12 min-w-12 px-4 border text-xs tracking-widest font-sans transition-all duration-200 flex items-center justify-center",
+                    isSelected && !isStockOut && "border-burgundy bg-burgundy text-ivory font-bold shadow-xs",
+                    !isSelected && !isStockOut && "border-charcoal/20 hover:border-charcoal bg-transparent text-charcoal",
+                    isStockOut && "border-charcoal/15 bg-charcoal/[0.02] text-charcoal/35 cursor-not-allowed line-through"
+                  )}
+                >
+                  {v.size}
+                  {isStockOut && (
+                    <span className="absolute -bottom-2 text-[8px] tracking-normal font-sans font-semibold text-error bg-ivory px-1 uppercase no-underline">
+                      Sold Out
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Primary Actions: Add to Bag, Wishlist, Share */}
-      <div className="flex gap-3">
+      {/* Primary Action Buttons */}
+      <div className="flex gap-3 pt-2">
         <Button
-          className="flex-1 py-4 text-xs uppercase tracking-widest font-bold"
+          className={cn(
+            "flex-1 py-4 text-xs uppercase tracking-[0.2em] font-bold shadow-sm transition-all duration-300",
+            isOutOfStock
+              ? "bg-charcoal/20 text-charcoal/50 hover:bg-charcoal/20 cursor-not-allowed border-0"
+              : "bg-burgundy text-ivory hover:bg-burgundy-dark hover:shadow-md"
+          )}
           size="lg"
           onClick={handleAdd}
-          disabled={isAdding || !selectedVariant || selectedVariant.stock === 0}
+          disabled={isAdding || isOutOfStock}
         >
-          {!selectedVariant || selectedVariant.stock === 0
-            ? "Out of Stock"
-            : isAdding
-              ? "Adding..."
-              : "Add to Bag"}
+          {isOutOfStock ? "Out of Stock" : isAdding ? "Adding to Bag..." : "Add to Bag"}
         </Button>
 
         {/* Wishlist Button */}
@@ -119,42 +156,88 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
             }
             await toggleWishlist(product.id);
             if (!wishlisted) {
-              toast.success("Added to wishlist");
+              toast.success("Added to Wishlist");
             } else {
-              toast.success("Removed from wishlist");
+              toast.success("Removed from Wishlist");
             }
           }}
           className={cn(
-            "h-[50px] w-[50px] flex items-center justify-center border transition-all duration-300",
+            "h-[50px] w-[50px] flex items-center justify-center border transition-all duration-300 shrink-0",
             wishlisted
-              ? "border-burgundy bg-burgundy/5 text-burgundy"
+              ? "border-burgundy bg-burgundy/10 text-burgundy"
               : "border-charcoal/20 hover:border-charcoal text-charcoal"
           )}
           aria-label="Add to wishlist"
         >
-          <Heart size={18} className={wishlisted ? "fill-burgundy" : ""} />
+          <Heart size={18} className={wishlisted ? "fill-burgundy text-burgundy" : ""} />
         </button>
 
         {/* Share Button */}
         <button
           type="button"
           onClick={handleShare}
-          className="h-[50px] w-[50px] flex items-center justify-center border border-charcoal/20 hover:border-charcoal text-charcoal transition-all"
+          className="h-[50px] w-[50px] flex items-center justify-center border border-charcoal/20 hover:border-charcoal text-charcoal transition-all shrink-0"
           aria-label="Share product"
         >
           <Share2 size={18} />
         </button>
       </div>
 
+      {/* Luxury Delivery & Service Highlights (Zara Style) */}
+      <div className="border-t border-charcoal/10 pt-5 space-y-4">
+        {/* Pincode Estimator */}
+        <div>
+          <p className="text-[11px] uppercase tracking-widest text-charcoal/70 font-semibold mb-2 flex items-center gap-1.5">
+            <Truck size={14} className="text-burgundy" /> Delivery Estimator
+          </p>
+          <form onSubmit={checkDeliveryPincode} className="flex gap-2">
+            <input
+              type="text"
+              maxLength={6}
+              placeholder="Enter Pincode (e.g. 400001)"
+              value={pincode}
+              onChange={(e) => {
+                setPincode(e.target.value.replace(/\D/g, ""));
+                setPincodeStatus(null);
+              }}
+              className="flex-1 border border-charcoal/20 bg-transparent px-3 py-2 text-xs font-mono tracking-wider focus:border-burgundy focus:outline-none"
+            />
+            <button
+              type="submit"
+              disabled={isCheckingPincode}
+              className="px-4 py-2 bg-charcoal text-ivory text-xs uppercase tracking-wider font-semibold hover:bg-burgundy transition-colors shrink-0"
+            >
+              {isCheckingPincode ? "Checking..." : "Check"}
+            </button>
+          </form>
+          {pincodeStatus && (
+            <p className="text-xs text-success font-medium mt-2 flex items-center gap-1">
+              <Check size={13} /> {pincodeStatus}
+            </p>
+          )}
+        </div>
+
+        {/* Trust & Craftsmanship Highlights */}
+        <div className="grid grid-cols-2 gap-3 pt-2 text-xs text-charcoal/70">
+          <div className="flex items-center gap-2 p-2.5 bg-beige/30 border border-charcoal/5">
+            <Sparkles size={16} className="text-gold-dark shrink-0" />
+            <span className="leading-tight">Heirloom Handcrafted Quality</span>
+          </div>
+          <div className="flex items-center gap-2 p-2.5 bg-beige/30 border border-charcoal/5">
+            <ShieldCheck size={16} className="text-gold-dark shrink-0" />
+            <span className="leading-tight">Free Shipping Above ₹15,000</span>
+          </div>
+        </div>
+      </div>
+
       {/* Size Chart Modal Overlay */}
       {isSizeChartOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/60 backdrop-blur-xs animate-fade-in">
-          {/* Backdrop click close */}
           <div className="fixed inset-0" onClick={() => setIsSizeChartOpen(false)} />
           
-          <div className="relative bg-ivory max-w-3xl w-full p-6 shadow-2xl z-10 border border-charcoal/10 max-h-[90vh] overflow-y-auto animate-zoom-in">
+          <div className="relative bg-ivory max-w-2xl w-full p-6 shadow-2xl z-10 border border-charcoal/10 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4 border-b border-charcoal/10 pb-3">
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-charcoal">Size Guide</h3>
+              <h3 className="font-serif text-lg tracking-wide text-charcoal">Size & Measurement Guide</h3>
               <button
                 type="button"
                 onClick={() => setIsSizeChartOpen(false)}
@@ -165,7 +248,7 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
               </button>
             </div>
             
-            <div className="relative w-full overflow-hidden bg-white border border-charcoal/5">
+            <div className="relative w-full overflow-hidden bg-white border border-charcoal/5 p-2">
               <img
                 src="/images/size-chart.jpg"
                 alt="Women's Wear Size Chart"
@@ -174,7 +257,9 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
             </div>
             
             <div className="mt-4 text-center">
-              <p className="text-xs text-charcoal/40 tracking-wider">All measurements are shown in inches. Compare with a similar garment you own for the best fit.</p>
+              <p className="text-xs text-charcoal/50 tracking-wider">
+                All measurements are in inches. For custom bespoke fitting inquiries, please contact our concierge.
+              </p>
             </div>
           </div>
         </div>

@@ -12,10 +12,25 @@ export async function getAllCategories(): Promise<CategoryDoc[]> {
 }
 
 export async function getCategoryBySlug(slug: string): Promise<CategoryDoc | null> {
+  const normalized = slug.toLowerCase().trim();
+  const slugAliases: Record<string, string> = {
+    "co-ords": "coords",
+    "coord": "coords",
+    "coords": "coords",
+    "saree": "sarees",
+    "sarees": "sarees",
+    "skirt": "drape-skirts",
+    "skirts": "drape-skirts",
+    "drape-skirt": "drape-skirts",
+    "drape-skirts": "drape-skirts",
+  };
+
+  const targetSlug = slugAliases[normalized] || normalized;
+
   try {
     const snap = await adminDb
       .collection(COLLECTIONS.categories)
-      .where("slug", "==", slug)
+      .where("slug", "in", [targetSlug, normalized])
       .limit(1)
       .get();
     if (snap.empty) return null;

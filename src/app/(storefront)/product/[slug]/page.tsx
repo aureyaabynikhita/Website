@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getProductsByCategory } from "@/services/products";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -6,7 +7,7 @@ import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { ProductDetailsAccordion } from "@/components/product/ProductDetailsAccordion";
 import { ProductGridSection } from "@/components/storefront/ProductGridSection";
 import { formatPrice, cn } from "@/lib/utils";
-import { Star } from "lucide-react";
+import { Star, ChevronRight } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -20,38 +21,50 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!product) return {};
 
   return {
-    title: product.seo.metaTitle || product.title,
-    description: product.seo.metaDescription || product.description,
+    title: `${product.title} | AUREYAA`,
+    description: product.seo?.metaDescription || product.description,
     openGraph: {
-      title: product.seo.metaTitle || product.title,
-      description: product.seo.metaDescription || product.description,
-      images: product.images[0] ? [product.images[0]] : [],
+      title: product.seo?.metaTitle || product.title,
+      description: product.seo?.metaDescription || product.description,
+      images: product.images?.[0] ? [product.images[0]] : [],
     },
   };
 }
 
-function ProductSpecsCard({ categoryId, color, fabric, wash }: { categoryId: string; color: string; fabric: string; wash: string }) {
+function ProductSpecsCard({
+  categoryId,
+  color,
+  fabric,
+  wash,
+}: {
+  categoryId: string;
+  color: string;
+  fabric: string;
+  wash: string;
+}) {
   const isSaree = categoryId.includes("saree");
   const isSkirt = categoryId.includes("skirt");
   const isCoord = categoryId.includes("coords");
 
   const specs = [
-    { label: "Stitch", value: "Ready to Wear" },
-    { label: "Weave Pattern", value: "Regular Designer Weave" },
-    { label: "Fabric Details", value: fabric || "Premium Blended Fabric" },
-    { label: "Wash Care", value: wash || "Dry Clean Only" },
-    { label: "Styling Neck", value: isSaree ? "Chic Drape Saree Cut" : isCoord ? "Elegant Collar / Round" : "Modern Indo-Western" },
-    { label: "Color Way", value: color || "Original Premium" },
+    { label: "Construction", value: "Ready to Wear Designer Finish" },
+    { label: "Silhouette", value: isSaree ? "Pre-Stitched Drape Saree" : isSkirt ? "Indo-Western Drape Skirt Set" : isCoord ? "Tailored Co-Ord Set" : "Luxury Contemporary" },
+    { label: "Fabric Details", value: fabric || "Premium Blended Silk & Georgette" },
+    { label: "Wash Care", value: wash || "Professional Dry Clean Only" },
+    { label: "Color Tone", value: color || "Original" },
+    { label: "Origin", value: "Handcrafted in India" },
   ];
 
   return (
-    <div className="bg-charcoal/[0.02] border border-charcoal/5 p-5 rounded-md mb-8">
-      <h3 className="text-xs uppercase tracking-widest font-bold text-burgundy mb-4">Product Specifications</h3>
-      <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+    <div className="bg-beige/30 border border-charcoal/10 p-5 mb-8">
+      <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold text-burgundy mb-4">
+        Garment Specifications
+      </h3>
+      <div className="grid grid-cols-2 gap-y-3.5 gap-x-6">
         {specs.map((s, idx) => (
-          <div key={idx} className="space-y-1">
-            <p className="text-[10px] uppercase tracking-wider text-charcoal/50 font-semibold">{s.label}</p>
-            <p className="text-sm text-charcoal font-sans font-medium leading-tight">{s.value}</p>
+          <div key={idx} className="space-y-0.5">
+            <p className="text-[9px] uppercase tracking-wider text-charcoal/50 font-semibold">{s.label}</p>
+            <p className="text-xs text-charcoal font-sans font-medium leading-snug">{s.value}</p>
           </div>
         ))}
       </div>
@@ -63,40 +76,49 @@ function renderFormattedDescription(text: string) {
   if (!text) return null;
   const paragraphs = text.split("\n\n");
   return paragraphs.map((p, index) => {
-    // Check if paragraph consists of bullet points
     const lines = p.split("\n");
-    const isList = lines.every(line => {
-      const trimmed = line.trim();
-      return trimmed === "" || trimmed.startsWith("- ") || trimmed.startsWith("• ") || trimmed.startsWith("* ");
-    }) && lines.some(line => line.trim() !== "");
-    
+    const isList =
+      lines.every((line) => {
+        const trimmed = line.trim();
+        return trimmed === "" || trimmed.startsWith("- ") || trimmed.startsWith("• ") || trimmed.startsWith("* ");
+      }) && lines.some((line) => line.trim() !== "");
+
     if (isList) {
       return (
-        <ul key={index} className="list-disc pl-5 mb-6 space-y-2">
-          {lines.filter(l => l.trim() !== "").map((line, i) => {
-            const cleanLine = line.trim().replace(/^[-•*]\s*/, "");
-            return (
-              <li key={i} className="text-sm text-charcoal/70 leading-relaxed font-sans">
-                {cleanLine}
-              </li>
-            );
-          })}
+        <ul key={index} className="list-disc pl-5 mb-5 space-y-1.5">
+          {lines
+            .filter((l) => l.trim() !== "")
+            .map((line, i) => {
+              const cleanLine = line.trim().replace(/^[-•*]\s*/, "");
+              return (
+                <li key={i} className="text-xs sm:text-sm text-charcoal/70 leading-relaxed font-sans">
+                  {cleanLine}
+                </li>
+              );
+            })}
         </ul>
       );
     }
 
     const parts = p.split(/(\*\*.*?\*\*)/g);
     return (
-      <div key={index} className="mb-4 text-charcoal/70 leading-relaxed text-sm md:text-base">
+      <div key={index} className="mb-4 text-charcoal/70 leading-relaxed text-xs sm:text-sm">
         {parts.map((part, i) => {
           if (part.startsWith("**") && part.endsWith("**")) {
             return (
-              <strong key={i} className="font-semibold text-burgundy font-sans tracking-widest block mt-4 mb-2 text-xs uppercase">
+              <strong
+                key={i}
+                className="font-semibold text-burgundy font-sans tracking-[0.15em] block mt-4 mb-1 text-[11px] uppercase"
+              >
                 {part.slice(2, -2)}
               </strong>
             );
           }
-          return <span key={i} className="font-sans text-sm text-charcoal/70">{part}</span>;
+          return (
+            <span key={i} className="font-sans text-xs sm:text-sm text-charcoal/75">
+              {part}
+            </span>
+          );
         })}
       </div>
     );
@@ -111,6 +133,17 @@ export default async function ProductPage({ params }: PageProps) {
   const related = (await getProductsByCategory(product.categoryId, 5)).filter(
     (p) => p.id !== product.id
   );
+
+  const categoryName =
+    product.categoryId === "cat-coords"
+      ? "Co-Ord Sets"
+      : product.categoryId === "cat-sarees"
+      ? "Drape Sarees"
+      : product.categoryId === "cat-drape-skirts"
+      ? "Drape Skirts"
+      : product.categoryId.replace("cat-", "");
+
+  const categorySlug = product.categoryId.replace("cat-", "");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -143,68 +176,99 @@ export default async function ProductPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-        <ProductGallery images={product.images} videoUrl={product.videoUrl} title={product.title} />
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-charcoal/50 font-sans">
+        <Link href="/" className="hover:text-burgundy transition-colors">Home</Link>
+        <ChevronRight size={12} />
+        <Link href={`/category/${categorySlug}`} className="hover:text-burgundy transition-colors">
+          {categoryName}
+        </Link>
+        <ChevronRight size={12} />
+        <span className="text-charcoal truncate font-medium max-w-[200px] sm:max-w-none">{product.title}</span>
+      </nav>
 
-        <div>
-          <p className="eyebrow mb-2">{product.categoryId.replace("cat-", "").replace("-", " ")}</p>
-          <h1 className="font-serif text-3xl md:text-4xl text-charcoal mb-3">{product.title}</h1>
-          
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xl text-charcoal/80 font-medium">
-              {formatPrice(product.basePrice)}
-              {product.compareAtPrice && (
-                <span className="ml-3 text-sm text-charcoal/40 line-through">
-                  {formatPrice(product.compareAtPrice)}
-                </span>
-              )}
-            </p>
+      {/* Main Grid Layout */}
+      <div className="grid md:grid-cols-2 gap-10 md:gap-14 lg:gap-20 items-start">
+        {/* Sticky Gallery for Desktop */}
+        <div className="md:sticky md:top-28">
+          <ProductGallery images={product.images} videoUrl={product.videoUrl} title={product.title} />
+        </div>
 
-            {product.ratingCount > 0 && (
-              <div className="flex items-center gap-1.5 bg-beige-light/30 px-3 py-1 rounded-full">
-                <div className="flex items-center text-gold">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={13}
-                      className={cn(
-                        "fill-current",
-                        i < Math.round(product.ratingAverage) ? "text-gold" : "text-charcoal/10 fill-none"
-                      )}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-charcoal/50 font-medium">
-                  {product.ratingAverage.toFixed(1)}
+        {/* Product Details Panel */}
+        <div className="space-y-6">
+          <div>
+            <p className="eyebrow mb-2">{categoryName}</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-charcoal tracking-wide mb-3">{product.title}</h1>
+
+            <div className="flex items-center justify-between gap-4 border-b border-charcoal/10 pb-4">
+              <div className="flex items-baseline gap-3">
+                <p className="text-2xl text-charcoal font-serif font-medium">
+                  {formatPrice(product.basePrice)}
+                </p>
+                {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
+                  <span className="text-sm text-charcoal/40 line-through font-sans">
+                    {formatPrice(product.compareAtPrice)}
+                  </span>
+                )}
+                <span className="text-[10px] text-charcoal/50 font-sans tracking-wide uppercase">
+                  (Incl. of all taxes)
                 </span>
               </div>
-            )}
+
+              {product.ratingCount > 0 && (
+                <div className="flex items-center gap-1 bg-beige/50 px-2.5 py-1 border border-charcoal/10">
+                  <div className="flex items-center text-gold-dark">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={12}
+                        className={cn(
+                          "fill-current",
+                          i < Math.round(product.ratingAverage) ? "text-gold-dark" : "text-charcoal/20 fill-none"
+                        )}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[11px] text-charcoal/70 font-semibold font-mono ml-1">
+                    {product.ratingAverage.toFixed(1)}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="border-t border-charcoal/10 pt-6 mb-6">
+          {/* Add to Cart Actions & Pincode Check */}
+          <AddToCartButton product={product} />
+
+          {/* Description */}
+          <div className="border-t border-charcoal/10 pt-6">
+            <h2 className="text-xs uppercase tracking-[0.15em] font-bold text-charcoal/80 mb-3">
+              About This Design
+            </h2>
             {renderFormattedDescription(product.description)}
           </div>
 
+          {/* Specifications Card */}
           <ProductSpecsCard
             categoryId={product.categoryId}
-            color={product.variants?.[0]?.color || "Default"}
+            color={product.variants?.[0]?.color || "Original"}
             fabric={product.fabricDetails}
             wash={product.washCare}
           />
 
-          <AddToCartButton product={product} />
-
+          {/* Accordion for Care, Shipping & Returns */}
           <ProductDetailsAccordion product={product} />
         </div>
       </div>
 
+      {/* Related Products / Complete the Look */}
       {related.length > 0 && (
-        <div className="mt-20 -mx-6 md:-mx-10 lg:-mx-16">
+        <div className="mt-24 pt-16 border-t border-charcoal/10">
           <ProductGridSection
-            eyebrow="Complete the Look"
-            title="You May Also Like"
+            eyebrow="Curated For You"
+            title="Complete the Look"
             products={related}
-            viewAllHref={`/category/${product.categoryId.replace("cat-", "")}`}
+            viewAllHref={`/category/${categorySlug}`}
           />
         </div>
       )}
