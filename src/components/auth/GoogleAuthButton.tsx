@@ -14,8 +14,12 @@ export function GoogleAuthButton() {
     setIsLoading(true);
     setError(null);
     try {
-      await signInWithGoogle();
-      window.location.href = "/account";
+      const user = await signInWithGoogle();
+      const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const redirectParam = params?.get("redirect");
+      const isAdminEmail = user.email?.toLowerCase().trim() === "aureyaabynikhita@gmail.com";
+      const destination = redirectParam || (isAdminEmail ? "/admin/dashboard" : "/account");
+      window.location.href = destination;
     } catch (err: any) {
       console.error("Google sign-in error details:", err);
       const code = err?.code || "";

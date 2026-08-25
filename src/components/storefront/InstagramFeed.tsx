@@ -26,12 +26,12 @@ const INSTAGRAM_TILES = [
   },
   {
     id: 5,
-    image: "/images/products/prod-naira-off-white/prod-naira-off-white-01.png",
+    image: "/images/products/prod-naira-off-white/prod-naira-off-white-02.png",
     caption: "Naira Off White — Quiet luxury co-ord",
   },
   {
     id: 6,
-    image: "/images/products/prod-nazakat-black/prod-nazakat-black-01.png",
+    image: "/images/products/prod-nazakat-black/prod-nazakat-black-02.png",
     caption: "Nazakat Black — Timeless drape saree",
   },
 ];

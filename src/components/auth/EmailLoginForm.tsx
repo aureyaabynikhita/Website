@@ -31,8 +31,15 @@ export function EmailLoginForm() {
       const isAdminEmail = data.email.toLowerCase().trim() === "aureyaabynikhita@gmail.com";
       const destination = redirectParam || (isAdminEmail ? "/admin/dashboard" : "/account");
       window.location.href = destination;
-    } catch {
-      setAuthError("Incorrect email or password.");
+    } catch (err: any) {
+      console.error("Login error:", err);
+      if (err.code === "auth/unauthorized-domain") {
+        setAuthError("Domain 'aureyaa.com' is not added to Firebase Authorized Domains. Please add it in Firebase Console > Authentication > Settings.");
+      } else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        setAuthError("Incorrect email or password. Note: Password is case-sensitive (Capital 'N' in Nikhita@2026).");
+      } else {
+        setAuthError(err.message || "Failed to sign in. Please try again.");
+      }
     }
   }
 

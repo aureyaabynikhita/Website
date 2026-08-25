@@ -18,7 +18,7 @@ const JOURNAL_POSTS = [
     title: "How to Care for Your Heirloom Silks, Georgette & Handcrafted Zari",
     category: "Craftsmanship",
     readTime: "3 min read",
-    image: "/images/products/prod-mooh-maroon/prod-mooh-maroon-01.png",
+    image: "/images/products/prod-mooh-maroon/prod-mooh-maroon-02.png",
   },
   {
     id: "j3",
@@ -26,7 +26,7 @@ const JOURNAL_POSTS = [
     title: "Minimalism in Occasion Wear: Building an Heirloom Ethnic Capsule",
     category: "Styling Edit",
     readTime: "5 min read",
-    image: "/images/products/prod-naira-black/prod-naira-black-01.png",
+    image: "/images/products/prod-naira-black/prod-naira-black-02.png",
   },
 ];
 
