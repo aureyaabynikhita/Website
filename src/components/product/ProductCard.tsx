@@ -106,15 +106,34 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
         <h3 className="font-sans text-xs sm:text-sm text-charcoal tracking-wide line-clamp-1 group-hover:text-burgundy transition-colors font-normal">
           {product.title}
         </h3>
-        <div className="flex items-center gap-2">
-          <p className="font-sans text-xs sm:text-sm font-medium text-charcoal/90 tracking-tight">
-            {formatPrice(product.basePrice)}
-          </p>
-          {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
-            <p className="font-sans text-[11px] text-charcoal/40 line-through">
-              {formatPrice(product.compareAtPrice)}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <p className="font-sans text-xs sm:text-sm font-medium text-charcoal/90 tracking-tight">
+              {formatPrice(product.basePrice)}
             </p>
-          )}
+            {product.compareAtPrice && product.compareAtPrice > product.basePrice && (
+              <p className="font-sans text-[11px] text-charcoal/40 line-through">
+                {formatPrice(product.compareAtPrice)}
+              </p>
+            )}
+          </div>
+
+          {/* Color variation count badge */}
+          {product.title.toLowerCase().includes("mooh") ? (
+            <span className="text-[10px] text-burgundy font-serif font-medium bg-burgundy/5 px-1.5 py-0.5 border border-burgundy/10">
+              6 Colors
+            </span>
+          ) : product.title.toLowerCase().includes("rooh") ||
+            product.title.toLowerCase().includes("naira") ||
+            product.title.toLowerCase().includes("sitara") ? (
+            <span className="text-[10px] text-burgundy font-serif font-medium bg-burgundy/5 px-1.5 py-0.5 border border-burgundy/10">
+              2 Colors
+            </span>
+          ) : product.title.toLowerCase().includes("zoya") ? (
+            <span className="text-[10px] text-burgundy font-serif font-medium bg-burgundy/5 px-1.5 py-0.5 border border-burgundy/10">
+              3 Styles
+            </span>
+          ) : null}
         </div>
       </div>
     </Link>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductsByCategory } from "@/services/products";
+import { getProductBySlug, getProductsByCategory, getProductColorSiblings } from "@/services/products";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { ColorSwatches } from "@/components/product/ColorSwatches";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { ProductDetailsAccordion } from "@/components/product/ProductDetailsAccordion";
 import { ProductGridSection } from "@/components/storefront/ProductGridSection";
@@ -130,9 +131,10 @@ export default async function ProductPage({ params }: PageProps) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const related = (await getProductsByCategory(product.categoryId, 5)).filter(
-    (p) => p.id !== product.id
-  );
+  const [colorSiblings, related] = await Promise.all([
+    getProductColorSiblings(product),
+    getProductsByCategory(product.categoryId, 5).then((list) => list.filter((p) => p.id !== product.id)),
+  ]);
 
   const categoryName =
     product.categoryId === "cat-coords"
@@ -236,6 +238,13 @@ export default async function ProductPage({ params }: PageProps) {
               )}
             </div>
           </div>
+
+          {/* Color Variations Section */}
+          {colorSiblings.length > 1 && (
+            <div className="border-b border-charcoal/10 pb-5">
+              <ColorSwatches siblings={colorSiblings} />
+            </div>
+          )}
 
           {/* Add to Cart Actions & Pincode Check */}
           <AddToCartButton product={product} />

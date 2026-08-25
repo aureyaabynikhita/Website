@@ -26,7 +26,11 @@ export function EmailLoginForm() {
     setAuthError(null);
     try {
       await signInWithEmail(data.email, data.password);
-      window.location.href = "/account";
+      const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const redirectParam = params?.get("redirect");
+      const isAdminEmail = data.email.toLowerCase().trim() === "aureyaabynikhita@gmail.com";
+      const destination = redirectParam || (isAdminEmail ? "/admin/dashboard" : "/account");
+      window.location.href = destination;
     } catch {
       setAuthError("Incorrect email or password.");
     }

@@ -117,18 +117,89 @@ export async function getProductsByIds(ids: string[]): Promise<ProductDoc[]> {
  * placeholder until Elasticsearch/Algolia is wired in. Fine for a small catalog,
  * not fine at scale (see README note in this phase).
  */
-export async function searchProducts(queryText: string, limit = 20): Promise<ProductDoc[]> {
-  const lower = queryText.toLowerCase();
+export interface ColorSibling {
+  id: string;
+  title: string;
+  slug: string;
+  color: string;
+  image: string;
+  basePrice: number;
+  isCurrent: boolean;
+}
+
+/**
+ * Finds sibling color variations belonging to the same style/collection family
+ * (e.g. Mooh Black, Mooh Ivory, Mooh Maroon, etc.)
+ */
+export async function getProductColorSiblings(currentProduct: ProductDoc): Promise<ColorSibling[]> {
+  const titleLower = currentProduct.title.toLowerCase();
+  const families = ["mooh", "rooh", "naira", "sitara", "zoya", "ada", "afreen", "nazakat"];
+  const matchedFamily = families.find((f) => titleLower.includes(f));
+
+  if (!matchedFamily) return [];
+
   try {
     const snap = await adminDb
       .collection(COLLECTIONS.products)
       .where("status", "==", "published")
-      .where("tags", "array-contains", lower)
-      .limit(limit)
       .get();
-    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
+
+    const siblings: ColorSibling[] = [];
+
+    snap.docs.forEach((d) => {
+      const p = d.data() as ProductDoc;
+      if (p.title.toLowerCase().includes(matchedFamily)) {
+        // Extract the color name from title (e.g. "MOOH BOTTLE GREEN" -> "Bottle Green")
+        const colorName = p.title
+          .toLowerCase()
+          .replace(matchedFamily, "")
+          .replace("jacket", "")
+          .trim()
+          .split(" ")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ") || "Original";
+
+        siblings.push({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          color: colorName,
+          image: p.images?.[0] || "/images/placeholder-1.jpg",
+          basePrice: p.basePrice,
+          isCurrent: p.id === currentProduct.id,
+        });
+      }
+    });
+
+    return siblings.length > 1 ? siblings : [];
+  } catch (error) {
+    console.error("Error in getProductColorSiblings:", error);
+    return [];
+  }
+}
+
+export async function searchProducts(queryText: string, limit = 20): Promise<ProductDoc[]> {
+  const lower = queryText.toLowerCase().trim();
+  if (!lower) return [];
+  try {
+    const snap = await adminDb
+      .collection(COLLECTIONS.products)
+      .where("status", "==", "published")
+      .get();
+    
+    // Client-side filter across title, description, and tags for flexible search
+    const results = snap.docs
+      .map((d) => serializeProduct(d.data()) as ProductDoc)
+      .filter((p) => 
+        p.title.toLowerCase().includes(lower) ||
+        p.description?.toLowerCase().includes(lower) ||
+        p.tags?.some((t) => t.toLowerCase().includes(lower))
+      );
+
+    return results.slice(0, limit);
   } catch (error) {
     console.error("Error in searchProducts:", error);
     return [];
   }
 }
+
