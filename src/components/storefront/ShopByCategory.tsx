@@ -32,7 +32,7 @@ export function ShopByCategory({ categories }: { categories: CategoryDoc[] }) {
           <div className={cn("grid gap-5 md:gap-8", gridColsClass)}>
             {categories.map((cat, i) => (
               <FadeIn key={cat.id} delay={i * 0.1}>
-                <Link href={`/category/${cat.slug}`} className="group block text-center">
+                <Link href={`/category/${cat.slug}`} className="group block text-center interactive-tap">
                   <div className="relative aspect-[3/4] overflow-hidden bg-beige/50 border border-charcoal/10">
                     <Image
                       src={cat.image ?? "/images/placeholder-1.jpg"}

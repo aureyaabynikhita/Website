@@ -20,26 +20,30 @@ const googleProvider = new GoogleAuthProvider();
 
 /** Creates the Firestore user doc on first login (any method). No-op if it already exists. */
 async function ensureUserDoc(user: FirebaseUser): Promise<void> {
-  const ref = doc(db, COLLECTIONS.users, user.uid);
-  const snapshot = await getDoc(ref);
-  if (snapshot.exists()) return;
+  try {
+    const ref = doc(db, COLLECTIONS.users, user.uid);
+    const snapshot = await getDoc(ref);
+    if (snapshot.exists()) return;
 
-  const newUser: Omit<UserDoc, "createdAt" | "updatedAt"> & {
-    createdAt: ReturnType<typeof serverTimestamp>;
-    updatedAt: ReturnType<typeof serverTimestamp>;
-  } = {
-    uid: user.uid,
-    email: user.email ?? "",
-    phone: user.phoneNumber ?? "",
-    displayName: user.displayName ?? "AUREYAA Customer",
-    role: "customer",
-    addresses: [],
-    rewardPoints: 0,
-    storeCredits: 0,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  };
-  await setDoc(ref, newUser);
+    const newUser: Omit<UserDoc, "createdAt" | "updatedAt"> & {
+      createdAt: ReturnType<typeof serverTimestamp>;
+      updatedAt: ReturnType<typeof serverTimestamp>;
+    } = {
+      uid: user.uid,
+      email: user.email ?? "",
+      phone: user.phoneNumber ?? "",
+      displayName: user.displayName ?? "AUREYAA Customer",
+      role: "customer",
+      addresses: [],
+      rewardPoints: 0,
+      storeCredits: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    await setDoc(ref, newUser);
+  } catch (err) {
+    console.warn("Client-side user profile sync skipped (handled by server session):", err);
+  }
 }
 
 /** POSTs the Firebase ID token to our API route, which mints an httpOnly session cookie. */

@@ -41,4 +41,23 @@
   .eyebrow {
     @apply text-xs md:text-sm tracking-[0.25em] uppercase text-gold-dark font-sans;
   }
+
+  /* Tactile interactive press effect for luxury e-commerce elements */
+  .interactive-tap {
+    @apply transition-all duration-200 active:scale-[0.98] active:brightness-95 cursor-pointer;
+  }
 }
+
+@keyframes luxuryShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-luxury-shimmer {
+  animation: luxuryShimmer 1.8s infinite ease-in-out;
+}
+

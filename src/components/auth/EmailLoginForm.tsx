@@ -33,12 +33,26 @@ export function EmailLoginForm() {
       window.location.href = destination;
     } catch (err: any) {
       console.error("Login error:", err);
-      if (err.code === "auth/unauthorized-domain") {
-        setAuthError("Domain 'aureyaa.com' is not added to Firebase Authorized Domains. Please add it in Firebase Console > Authentication > Settings.");
-      } else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
-        setAuthError("Incorrect email or password. Note: Password is case-sensitive (Capital 'N' in Nikhita@2026).");
+      const code = err?.code || "";
+      const msg = (err?.message || "").toLowerCase();
+
+      if (code === "auth/unauthorized-domain") {
+        setAuthError("This domain is not added to Firebase Authorized Domains.");
+      } else if (
+        code === "auth/invalid-credential" ||
+        code === "auth/wrong-password" ||
+        code === "auth/user-not-found" ||
+        code === "auth/invalid-login-credentials"
+      ) {
+        setAuthError("Incorrect email or password. Please try again.");
+      } else if (code === "auth/too-many-requests") {
+        setAuthError("Too many failed attempts. Please try again later or reset your password.");
+      } else if (code === "auth/user-disabled") {
+        setAuthError("This account has been disabled. Please contact customer support.");
+      } else if (msg.includes("permission") || msg.includes("missing")) {
+        setAuthError("Authentication error. Please check your credentials and try again.");
       } else {
-        setAuthError(err.message || "Failed to sign in. Please try again.");
+        setAuthError("Invalid email or password. Please try again.");
       }
     }
   }

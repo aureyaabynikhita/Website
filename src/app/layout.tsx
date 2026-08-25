@@ -5,6 +5,8 @@ import { AuthProvider } from "@/components/shared/AuthProvider";
 import { AnalyticsScripts } from "@/components/shared/AnalyticsScripts";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { NavigationProgressBar } from "@/components/shared/NavigationProgressBar";
+import { Suspense } from "react";
 import "./globals.css";
 
 const serif = Cormorant_Garamond({
@@ -180,6 +182,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
+        <Suspense fallback={null}>
+          <NavigationProgressBar />
+        </Suspense>
         <AuthProvider>{children}</AuthProvider>
         <Toaster position="bottom-center" toastOptions={{ style: { fontSize: "14px" } }} />
         <AnalyticsScripts />

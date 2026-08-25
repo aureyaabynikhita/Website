@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -10,6 +11,7 @@ import type { ProductDoc } from "@/types/firestore";
 
 export function ProductCard({ product, priority = false }: { product: ProductDoc; priority?: boolean }) {
   const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
   const { isWishlisted, toggle, requiresLogin } = useWishlist();
   const wishlisted = isWishlisted(product.id);
 
@@ -19,9 +21,23 @@ export function ProductCard({ product, priority = false }: { product: ProductDoc
   const availableSizes = product.variants?.filter((v) => v.stock > 0).map((v) => v.size) ?? [];
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block text-left">
+    <Link
+      href={`/product/${product.slug}`}
+      onClick={() => setIsNavigating(true)}
+      className="group block text-left interactive-tap relative"
+    >
       {/* Visual Image Container with full-head headroom and luxury styling */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F4EDE4] border border-charcoal/5">
+        {/* Loading overlay when clicked */}
+        {isNavigating && (
+          <div className="absolute inset-0 z-20 bg-charcoal/25 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 transition-all duration-300">
+            <Loader2 className="h-6 w-6 text-ivory animate-spin" />
+            <span className="text-[9px] uppercase tracking-[0.2em] font-serif text-ivory font-semibold bg-burgundy/80 px-2 py-0.5 shadow-sm">
+              Opening...
+            </span>
+          </div>
+        )}
+
         {/* Primary Image */}
         <Image
           src={img1}
