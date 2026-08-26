@@ -164,10 +164,20 @@ export async function markOrderPaid(
 }
 
 export async function getUserOrders(userId: string): Promise<OrderDoc[]> {
-  const snap = await adminDb
-    .collection(COLLECTIONS.orders)
-    .where("userId", "==", userId)
-    .orderBy("createdAt", "desc")
-    .get();
-  return snap.docs.map((d) => d.data() as OrderDoc);
+  try {
+    const snap = await adminDb
+      .collection(COLLECTIONS.orders)
+      .where("userId", "==", userId)
+      .get();
+    return snap.docs
+      .map((d) => d.data() as OrderDoc)
+      .sort((a, b) => {
+        const timeA = (a.createdAt as any)?.toMillis?.() || (a.createdAt as any)?._seconds * 1000 || 0;
+        const timeB = (b.createdAt as any)?.toMillis?.() || (b.createdAt as any)?._seconds * 1000 || 0;
+        return timeB - timeA;
+      });
+  } catch (err) {
+    console.error("getUserOrders query error:", err);
+    return [];
+  }
 }

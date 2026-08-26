@@ -12,9 +12,37 @@ export async function getServerSession(): Promise<{ uid: string; profile: UserDo
 
   try {
     const decoded = await adminAuth.verifySessionCookie(sessionCookie, true);
-    const userSnap = await adminDb.collection(COLLECTIONS.users).doc(decoded.uid).get();
-    return { uid: decoded.uid, profile: (userSnap.data() as UserDoc) ?? null };
-  } catch {
+    const userDocRef = adminDb.collection(COLLECTIONS.users).doc(decoded.uid);
+    const userSnap = await userDocRef.get();
+    
+    const isAdminEmail = decoded.email?.toLowerCase().trim() === "aureyaabynikhita@gmail.com";
+    let profile: UserDoc;
+
+    if (userSnap.exists) {
+      profile = userSnap.data() as UserDoc;
+      if (isAdminEmail && profile.role !== "admin") {
+        profile.role = "admin";
+        await userDocRef.update({ role: "admin" }).catch(() => {});
+      }
+    } else {
+      profile = {
+        uid: decoded.uid,
+        email: decoded.email ?? "",
+        phone: decoded.phone_number ?? "",
+        displayName: decoded.name ?? (isAdminEmail ? "Nikhita Matania" : "AUREYAA Member"),
+        role: isAdminEmail ? "admin" : "customer",
+        addresses: [],
+        rewardPoints: 0,
+        storeCredits: 0,
+        createdAt: new Date() as any,
+        updatedAt: new Date() as any,
+      };
+      await userDocRef.set(profile, { merge: true }).catch(() => {});
+    }
+
+    return { uid: decoded.uid, profile };
+  } catch (err) {
+    console.error("getServerSession verification failed:", err);
     return null;
   }
 }
@@ -25,3 +53,4 @@ export async function requireAdmin(): Promise<{ uid: string; profile: UserDoc } 
   if (!session || session.profile?.role !== "admin") return null;
   return { uid: session.uid, profile: session.profile };
 }
+
