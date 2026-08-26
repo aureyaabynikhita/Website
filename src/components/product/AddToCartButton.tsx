@@ -73,7 +73,7 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
     setIsCheckingPincode(true);
     setTimeout(() => {
       setIsCheckingPincode(false);
-      setPincodeStatus(`Standard delivery in 3–5 business days to ${pincode}`);
+      setPincodeStatus(`Standard delivery in 3–5 business days to ${pincode} • Free Shipping`);
     }, 600);
   };
 
@@ -224,8 +224,8 @@ export function AddToCartButton({ product }: { product: ProductDoc }) {
             <span className="leading-tight">Heirloom Handcrafted Quality</span>
           </div>
           <div className="flex items-center gap-2 p-2.5 bg-beige/30 border border-charcoal/5">
-            <ShieldCheck size={16} className="text-gold-dark shrink-0" />
-            <span className="leading-tight">Free Shipping Above ₹15,000</span>
+            <Truck size={16} className="text-gold-dark shrink-0" />
+            <span className="leading-tight font-medium text-burgundy">Complimentary Free Shipping</span>
           </div>
         </div>
       </div>

@@ -230,7 +230,7 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
           </div>
         </div>
 
-        <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-none">
+        <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.id}

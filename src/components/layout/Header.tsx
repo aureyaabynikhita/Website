@@ -34,7 +34,17 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-charcoal/10 bg-white backdrop-blur-sm shadow-sm transition-all duration-300">
+    <header className="sticky top-0 z-50 bg-white backdrop-blur-sm shadow-sm transition-all duration-300">
+      {/* Top Luxury Free Shipping Announcement Bar */}
+      <div className="bg-burgundy text-ivory py-2 px-4 text-center border-b border-gold/20">
+        <div className="section-container flex items-center justify-center gap-2.5 text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-sans font-medium">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold" />
+          <span>Complimentary Pan-India Free Shipping on All Orders</span>
+          <span className="hidden sm:inline text-gold/60">•</span>
+          <span className="hidden sm:inline text-ivory/85">Cash on Delivery Available</span>
+        </div>
+      </div>
+
       <div className="section-container flex h-20 md:h-24 items-center justify-between">
         <button
           type="button"

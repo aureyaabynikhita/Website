@@ -40,7 +40,7 @@ export function ProductGallery({ images, videoUrl, title }: ProductGalleryProps)
     <>
       <div className="flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
         {/* Desktop Vertical Thumbnails */}
-        <div className="hidden md:flex flex-col gap-3 max-h-[640px] overflow-y-auto pr-1 scrollbar-thin">
+        <div className="hidden md:flex flex-col gap-3 max-h-[640px] overflow-y-auto no-scrollbar">
           {media.map((item, i) => (
             <button
               key={item.url + i}
@@ -153,7 +153,7 @@ export function ProductGallery({ images, videoUrl, title }: ProductGalleryProps)
         </div>
 
         {/* Mobile Horizontal Thumbnails */}
-        <div className="flex md:hidden gap-2.5 overflow-x-auto pb-1 w-full scrollbar-none snap-x">
+        <div className="flex md:hidden gap-2.5 overflow-x-auto pb-1 w-full no-scrollbar snap-x">
           {media.map((item, i) => (
             <button
               key={item.url + "-mob-" + i}

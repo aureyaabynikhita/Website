@@ -16,9 +16,9 @@ export function ProductDetailsAccordion({ product }: { product: ProductDoc }) {
       : []),
     {
       id: "delivery",
-      label: "Delivery & Returns",
+      label: "Complimentary Shipping & Returns",
       content:
-        "Standard delivery in 5–7 business days across India. Easy 7-day returns on unworn pieces with tags intact.",
+        "Complimentary Pan-India Free Shipping on all orders. Handcrafted and carefully dispatched with standard delivery in 4–6 business days. Easy 7-day returns on unworn pieces with tags intact.",
     },
   ];
 

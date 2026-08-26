@@ -46,6 +46,15 @@
   .interactive-tap {
     @apply transition-all duration-200 active:scale-[0.98] active:brightness-95 cursor-pointer;
   }
+
+  /* Clean hide scrollbars while preserving full scrollability */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @keyframes luxuryShimmer {

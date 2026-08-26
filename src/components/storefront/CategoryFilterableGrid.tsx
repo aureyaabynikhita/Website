@@ -298,7 +298,7 @@ export function CategoryFilterableGrid({ products }: CategoryFilterableGridProps
       {/* Main Content Layout */}
       <div className="grid md:grid-cols-[240px_1fr] gap-8 lg:gap-12 items-start">
         {/* Desktop Sidebar Filters */}
-        <aside className="hidden md:block sticky top-28 overflow-y-auto max-h-[80vh] pr-4 scrollbar-thin">
+        <aside className="hidden md:block sticky top-28 overflow-y-auto max-h-[80vh] pr-4 no-scrollbar">
           <FiltersContent />
         </aside>
 
