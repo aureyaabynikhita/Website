@@ -38,10 +38,15 @@ export async function getNewArrivals(limit = 8): Promise<ProductDoc[]> {
       .collection(COLLECTIONS.products)
       .where("status", "==", "published")
       .where("isNewArrival", "==", true)
-      .orderBy("createdAt", "desc")
       .limit(limit)
       .get();
-    return snap.docs.map((d) => serializeProduct(d.data()) as ProductDoc);
+    return snap.docs
+      .map((d) => serializeProduct(d.data()) as ProductDoc)
+      .sort((a, b) => {
+        const timeA = (a.createdAt as any)?.seconds ?? (a.createdAt as any)?._seconds ?? 0;
+        const timeB = (b.createdAt as any)?.seconds ?? (b.createdAt as any)?._seconds ?? 0;
+        return timeB - timeA;
+      });
   } catch (error) {
     console.error("Error in getNewArrivals:", error);
     return [];

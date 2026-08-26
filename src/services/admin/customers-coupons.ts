@@ -3,18 +3,33 @@ import { FieldValue } from "firebase-admin/firestore";
 import { COLLECTIONS, type UserDoc, type CouponDoc } from "@/types/firestore";
 
 export async function getAllCustomers(limit = 200): Promise<UserDoc[]> {
-  const snap = await adminDb
-    .collection(COLLECTIONS.users)
-    .where("role", "==", "customer")
-    .orderBy("createdAt", "desc")
-    .limit(limit)
-    .get();
-  return snap.docs.map((d) => d.data() as UserDoc);
+  try {
+    const snap = await adminDb
+      .collection(COLLECTIONS.users)
+      .limit(limit)
+      .get();
+    return snap.docs
+      .map((d) => d.data() as UserDoc)
+      .filter((u) => u.role === "customer" || !u.role)
+      .sort((a, b) => {
+        const timeA = (a.createdAt as any)?.seconds ?? (a.createdAt as any)?._seconds ?? 0;
+        const timeB = (b.createdAt as any)?.seconds ?? (b.createdAt as any)?._seconds ?? 0;
+        return timeB - timeA;
+      });
+  } catch (err) {
+    console.error("getAllCustomers error:", err);
+    return [];
+  }
 }
 
 export async function getAllCoupons(): Promise<CouponDoc[]> {
-  const snap = await adminDb.collection(COLLECTIONS.coupons).orderBy("validTill", "desc").get();
-  return snap.docs.map((d) => d.data() as CouponDoc);
+  try {
+    const snap = await adminDb.collection(COLLECTIONS.coupons).get();
+    return snap.docs.map((d) => d.data() as CouponDoc);
+  } catch (err) {
+    console.error("getAllCoupons error:", err);
+    return [];
+  }
 }
 
 export async function createCoupon(data: Omit<CouponDoc, "usedCount">): Promise<void> {
