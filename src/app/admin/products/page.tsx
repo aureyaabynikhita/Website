@@ -58,9 +58,9 @@ export default async function AdminProductsPage() {
                   <td className="p-4 text-right">
                     <Link
                       href={`/admin/products/${p.id}`}
-                      className="text-burgundy text-xs uppercase tracking-wide hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-burgundy/10 text-burgundy hover:bg-burgundy hover:text-ivory text-xs font-semibold uppercase tracking-wider transition-colors border border-burgundy/20"
                     >
-                      Edit
+                      Edit Product
                     </Link>
                   </td>
                 </tr>
