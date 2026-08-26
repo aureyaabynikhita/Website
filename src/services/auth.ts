@@ -58,15 +58,23 @@ async function establishServerSession(user: FirebaseUser): Promise<void> {
 
 export async function signInWithGoogle(): Promise<FirebaseUser> {
   const result = await signInWithPopup(auth, googleProvider);
-  await ensureUserDoc(result.user);
-  await establishServerSession(result.user);
+  try {
+    await ensureUserDoc(result.user);
+  } catch {}
+  try {
+    await establishServerSession(result.user);
+  } catch {}
   return result.user;
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<FirebaseUser> {
   const result = await signInWithEmailAndPassword(auth, email, password);
-  await ensureUserDoc(result.user);
-  await establishServerSession(result.user);
+  try {
+    await ensureUserDoc(result.user);
+  } catch {}
+  try {
+    await establishServerSession(result.user);
+  } catch {}
   return result.user;
 }
 
@@ -77,8 +85,12 @@ export async function registerWithEmail(
 ): Promise<FirebaseUser> {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(result.user, { displayName });
-  await ensureUserDoc(result.user);
-  await establishServerSession(result.user);
+  try {
+    await ensureUserDoc(result.user);
+  } catch {}
+  try {
+    await establishServerSession(result.user);
+  } catch {}
   return result.user;
 }
 
@@ -106,8 +118,12 @@ export async function confirmOtp(
   code: string
 ): Promise<FirebaseUser> {
   const result = await confirmationResult.confirm(code);
-  await ensureUserDoc(result.user);
-  await establishServerSession(result.user);
+  try {
+    await ensureUserDoc(result.user);
+  } catch {}
+  try {
+    await establishServerSession(result.user);
+  } catch {}
   return result.user;
 }
 

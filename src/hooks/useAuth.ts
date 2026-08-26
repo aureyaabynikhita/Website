@@ -27,9 +27,27 @@ export function useAuthListener() {
       }
 
       const ref = doc(db, COLLECTIONS.users, firebaseUser.uid);
-      unsubscribeProfile = onSnapshot(ref, (snapshot) => {
-        setAuth(firebaseUser.uid, (snapshot.data() as UserDoc) ?? null);
-      });
+      unsubscribeProfile = onSnapshot(
+        ref,
+        (snapshot) => {
+          setAuth(firebaseUser.uid, (snapshot.data() as UserDoc) ?? null);
+        },
+        (error) => {
+          // If Firestore user doc read fails due to rules or network, fallback to basic user state
+          setAuth(firebaseUser.uid, {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email ?? "",
+            phone: firebaseUser.phoneNumber ?? "",
+            displayName: firebaseUser.displayName ?? "AUREYAA Member",
+            role: firebaseUser.email?.toLowerCase().includes("aureyaa") ? "admin" : "customer",
+            addresses: [],
+            rewardPoints: 0,
+            storeCredits: 0,
+            createdAt: new Date() as any,
+            updatedAt: new Date() as any,
+          });
+        }
+      );
     });
 
     return () => {

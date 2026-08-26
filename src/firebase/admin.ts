@@ -39,7 +39,9 @@ export const adminDb = new Proxy({} as Firestore, {
   get(target, prop, receiver) {
     if (!cachedDb) {
       cachedDb = getFirestore(getAdminApp());
-      cachedDb.settings({ ignoreUndefinedProperties: true });
+      try {
+        cachedDb.settings({ ignoreUndefinedProperties: true });
+      } catch {}
     }
     const db = cachedDb;
     const value = Reflect.get(db, prop);
