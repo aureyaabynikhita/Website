@@ -23,6 +23,14 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
   const [resetError, setResetError] = useState<string | null>(null);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
+  // Return Form State
+  const [selectedReturnOrder, setSelectedReturnOrder] = useState<OrderDoc | null>(null);
+  const [returnReason, setReturnReason] = useState("Size / Fit Issue");
+  const [returnType, setReturnType] = useState<"Exchange" | "Store Credit" | "Bank Refund">("Exchange");
+  const [returnComments, setReturnComments] = useState("");
+  const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
+  const [returnSuccess, setReturnSuccess] = useState(false);
+
   // Address Form State
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressLabel, setAddressLabel] = useState("Home");
@@ -155,6 +163,35 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
       }));
     } catch (err: any) {
       alert("Failed to delete address: " + err.message);
+    }
+  };
+
+  const handleSubmitReturnRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedReturnOrder) return;
+    setIsSubmittingReturn(true);
+    setReturnSuccess(false);
+    try {
+      const res = await fetch("/api/returns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: selectedReturnOrder.id,
+          reason: returnReason,
+          type: returnType,
+          comments: returnComments,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to submit return request");
+      setReturnSuccess(true);
+      setSelectedReturnOrder(null);
+      setReturnComments("");
+      alert("Your return/exchange request has been successfully submitted! Admin will verify and schedule reverse pickup via Shiprocket shortly.");
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message || "Failed to submit return request. Please try again.");
+    } finally {
+      setIsSubmittingReturn(false);
     }
   };
 
@@ -564,41 +601,133 @@ export function AccountDashboard({ profile, orders }: AccountDashboardProps) {
               Returns & Refunds
             </h2>
             <div className="bg-beige/15 p-6 border border-charcoal/10 rounded-sm">
-              <h3 className="font-serif text-md text-charcoal mb-2">Our Policy</h3>
+              <h3 className="font-serif text-md text-charcoal mb-2">Our Return & Exchange Policy</h3>
               <p className="text-xs text-charcoal/70 leading-relaxed mb-4">
-                We accept returns and exchange requests on all tags-on, unworn products within **7 days** of delivery. You can trigger an automated email pickup request directly below.
+                We accept size exchange, store credit, and bank refund requests on all tags-on, unworn products within **7 days** of delivery. Reverse pick-up is organized via **Shiprocket** upon admin approval.
               </p>
               <ul className="text-2xs text-charcoal/50 space-y-1 list-disc pl-4">
-                <li>Pickups are conducted within 48-72 hours of approval.</li>
-                <li>Refunds are credited directly to your original payment mode or as store credits.</li>
+                <li>Reverse pick-up is scheduled within 48 hours of return approval.</li>
+                <li>Refunds are credited directly to your bank account or added as store credit to your wallet.</li>
               </ul>
             </div>
 
-            <div>
-              <h3 className="font-serif text-lg text-charcoal mb-4">Request a Return</h3>
-              {orders.filter(o => o.status === "delivered").length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-charcoal/10 bg-ivory/5 text-xs text-charcoal/40">
-                  No orders qualify for returns yet (only delivered orders are returnable).
+            {/* Wizard Form when order is selected */}
+            {selectedReturnOrder ? (
+              <form onSubmit={handleSubmitReturnRequest} className="border border-burgundy/20 bg-beige/5 p-6 space-y-4 rounded-sm">
+                <h3 className="font-serif text-md text-charcoal">
+                  Request Return for Order <span className="font-semibold">{selectedReturnOrder.orderNumber}</span>
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-2xs uppercase tracking-wider text-charcoal/50 mb-2">Reason for Return</label>
+                    <select
+                      value={returnReason}
+                      onChange={(e) => setReturnReason(e.target.value)}
+                      className="w-full border-b border-charcoal/20 bg-transparent py-2 text-xs focus:border-burgundy focus:outline-none"
+                    >
+                      <option value="Size / Fit Issue">Size / Fit Issue</option>
+                      <option value="Defective / Damaged">Defective / Damaged</option>
+                      <option value="Incorrect Item Received">Incorrect Item Received</option>
+                      <option value="Not as Expected">Not as Expected</option>
+                      <option value="Fabric Preference">Fabric Preference</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-2xs uppercase tracking-wider text-charcoal/50 mb-2">Refund / Resolution Type</label>
+                    <select
+                      value={returnType}
+                      onChange={(e) => setReturnType(e.target.value as any)}
+                      className="w-full border-b border-charcoal/20 bg-transparent py-2 text-xs focus:border-burgundy focus:outline-none"
+                    >
+                      <option value="Exchange">Size / Color Exchange</option>
+                      <option value="Store Credit">Issue Store Credit (Wallet)</option>
+                      <option value="Bank Refund">Original Source Bank Refund</option>
+                    </select>
+                  </div>
                 </div>
-              ) : (
+
+                <div>
+                  <label className="block text-2xs uppercase tracking-wider text-charcoal/50 mb-2">Optional Comments / Sizing Details</label>
+                  <textarea
+                    rows={2}
+                    value={returnComments}
+                    onChange={(e) => setReturnComments(e.target.value)}
+                    placeholder="Provide specific sizing details or reason descriptions to help us verify..."
+                    className="w-full border border-charcoal/20 bg-transparent p-2 text-xs focus:border-burgundy focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex gap-4 pt-2">
+                  <Button type="submit" disabled={isSubmittingReturn}>
+                    {isSubmittingReturn ? "Submitting..." : "Submit Return Request"}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setSelectedReturnOrder(null)}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <div>
+                <h3 className="font-serif text-lg text-charcoal mb-4">Request a Return</h3>
+                {orders.filter(o => o.status === "delivered").length === 0 ? (
+                  <div className="text-center py-12 border border-dashed border-charcoal/10 bg-ivory/5 text-xs text-charcoal/40">
+                    No orders qualify for returns yet (only delivered orders are returnable).
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.filter(o => o.status === "delivered").map((order) => (
+                      <div
+                        key={order.id}
+                        className="border border-charcoal/10 p-5 rounded-sm flex items-center justify-between flex-wrap gap-4 bg-beige/5 hover:border-charcoal/30 transition-colors"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-charcoal">{order.orderNumber}</p>
+                          <p className="text-2xs text-charcoal/50">
+                            Delivered on{" "}
+                            {order.updatedAt?.toDate
+                              ? order.updatedAt.toDate().toLocaleDateString("en-IN")
+                              : "Recent"}
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedReturnOrder(order)}
+                        >
+                          Initiate Request
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Active Return Statuses */}
+            {orders.filter(o => o.status === "return_requested" || o.status === "returned").length > 0 && (
+              <div className="pt-6">
+                <h3 className="font-serif text-lg text-charcoal mb-4">Active Return Status</h3>
                 <div className="space-y-4">
-                  {orders.filter(o => o.status === "delivered").map((order) => (
+                  {orders.filter(o => o.status === "return_requested" || o.status === "returned").map((order) => (
                     <div
                       key={order.id}
-                      className="border border-charcoal/10 p-5 rounded-sm flex items-center justify-between flex-wrap gap-4 bg-beige/5 hover:border-charcoal/30 transition-colors"
+                      className="border border-charcoal/10 p-5 rounded-sm flex items-center justify-between bg-white shadow-xs"
                     >
                       <div>
                         <p className="text-xs font-semibold text-charcoal">{order.orderNumber}</p>
-                        <p className="text-2xs text-charcoal/50">Delivered on {order.updatedAt?.toDate?.().toLocaleDateString() || "Recent"}</p>
+                        <p className="text-2xs text-charcoal/50">Status: {order.status === "returned" ? "Completed / Exchanged" : "Pending Admin Review"}</p>
                       </div>
-                      <a href={`mailto:returns@aureyaa.in?subject=Return Request: ${order.orderNumber}&body=I would like to request return/refund for order ${order.orderNumber}. Reason for return: `}>
-                        <Button variant="outline" size="sm">Initiate Request</Button>
-                      </a>
+                      <span className={`px-2.5 py-0.5 text-2xs font-semibold rounded-full ${
+                        order.status === "returned" ? "bg-success/15 text-success" : "bg-gold/15 text-gold-dark"
+                      }`}>
+                        {order.status === "returned" ? "Returned & Settled" : "Awaiting Verification"}
+                      </span>
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
