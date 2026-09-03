@@ -1,41 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { JOURNAL_ARTICLES } from "@/data/journal-data";
 
 export const metadata: Metadata = {
   title: "The Journal — AUREYAA",
   description: "Read about the design philosophy, heritage, and styling tips behind AUREYAA.",
 };
-
-const ARTICLES = [
-  {
-    id: 1,
-    slug: "philosophy-of-quiet-luxury",
-    title: "The Philosophy of Quiet Luxury in Indo-Western Style",
-    excerpt: "Exploring the rise of contemporary styling, clean lines, and understated elegance in heritage-inspired outfits.",
-    date: "July 18, 2026",
-    category: "Design Story",
-    image: "/images/products/prod-rooh-beige/bb9b9409-5484-4863-8a39-ffde0b674390.jpg",
-  },
-  {
-    id: 2,
-    slug: "caring-for-silks-zari",
-    title: "How to Care for Your Heirloom Silks and Zari",
-    excerpt: "A comprehensive guide on maintaining and storing your luxury fabrics to ensure their beauty lasts for generations.",
-    date: "June 25, 2026",
-    category: "Craftsmanship",
-    image: "/images/products/prod-ada-cherry-red/63937eb0-57f7-4d07-a0b5-a9339c0d0228.jpg",
-  },
-  {
-    id: 3,
-    slug: "building-timeless-wardrobe",
-    title: "Minimalism: Building a Timeless Ethnic Wardrobe",
-    excerpt: "How to select versatile contemporary silhouettes and co-ord sets that transcend seasonal trends.",
-    date: "May 14, 2026",
-    category: "Style Guide",
-    image: "/images/products/prod-naira-black/32f22b79-583c-4863-9d0a-ab930c12845c.jpg",
-  },
-];
 
 export default function JournalPage() {
   return (
@@ -49,7 +20,7 @@ export default function JournalPage() {
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
-        {ARTICLES.map((article) => (
+        {JOURNAL_ARTICLES.map((article) => (
           <Link key={article.id} href={`/journal/${article.slug}`} className="group block">
             <article className="cursor-pointer">
               <div className="relative aspect-[4/3] bg-beige overflow-hidden mb-6">

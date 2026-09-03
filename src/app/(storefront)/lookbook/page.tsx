@@ -11,19 +11,19 @@ const LOOKS = [
     id: 1,
     title: "Volume I: Fluid Silhouettes",
     description: "An exploration of silk drapes and fluid, unrestricted shapes designed for modern elegance.",
-    image: "/images/lookbook-1.png",
+    image: "/images/products/prod-zoya-jacket-black/prod-zoya-jacket-black-01.jpg",
   },
   {
     id: 2,
     title: "Volume II: Contemporary Heritage",
     description: "Honoring traditional weaves through minimal structures and modern Indo-Western cuts.",
-    image: "/images/lookbook-2.png",
+    image: "/images/products/prod-zoya-cherry-red/prod-zoya-cherry-red-01.png",
   },
   {
     id: 3,
     title: "Volume III: Minimalist Drape",
     description: "Quiet luxury defined. Delicate craftsmanship met with classic premium fabrications.",
-    image: "/images/lookbook-3.png",
+    image: "/images/products/prod-ada-cherry-red/prod-ada-cherry-red-01.png",
   },
 ];
 

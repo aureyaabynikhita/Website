@@ -12,7 +12,7 @@ const LISTINGS_DIR = "c:\\Users\\lenovo\\Downloads\\Listings";
 interface ProductInfo {
   name: string;
   folder: string;
-  category: "INDO WESTERN-CO-ORD SETS" | "INDO WESTERN-drape saree" | "INDO WESTERN-drape skirt";
+  category: "INDO WESTERN-CO-ORD SETS" | "INDO WESTERN-drape saree" | "INDO WESTERN-drape skirt" | "INDO WESTERN";
   color: string;
   sizes: string[];
   mrp: number;
@@ -22,7 +22,7 @@ const productsToUpload: ProductInfo[] = [
   {
     name: "MOOH IVORY",
     folder: "MOOH ivory",
-    category: "INDO WESTERN-CO-ORD SETS",
+    category: "INDO WESTERN",
     color: "Ivory",
     sizes: ["M", "L", "XL", "XXL"],
     mrp: 3823
@@ -168,7 +168,8 @@ const productsToUpload: ProductInfo[] = [
 const categoryIdMap = {
   "INDO WESTERN-CO-ORD SETS": "cat-coords",
   "INDO WESTERN-drape saree": "cat-sarees",
-  "INDO WESTERN-drape skirt": "cat-drape-skirts"
+  "INDO WESTERN-drape skirt": "cat-drape-skirts",
+  "INDO WESTERN": "cat-indo-western"
 };
 
 function generateDescription(name: string, category: string, color: string): string {

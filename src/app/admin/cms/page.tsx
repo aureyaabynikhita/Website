@@ -37,7 +37,7 @@ const INITIAL_ARTICLES: Article[] = [
     category: "Design Story",
     date: "July 18, 2026",
     excerpt: "Exploring the rise of contemporary styling, clean lines, and understated elegance in heritage-inspired outfits.",
-    image: "/images/products/prod-rooh-beige/bb9b9409-5484-4863-8a39-ffde0b674390.jpg",
+    image: "/images/products/prod-rooh-beige/prod-rooh-beige-01.png",
   },
   {
     id: 2,
@@ -46,7 +46,7 @@ const INITIAL_ARTICLES: Article[] = [
     category: "Craftsmanship",
     date: "June 25, 2026",
     excerpt: "A comprehensive guide on maintaining and storing your luxury fabrics to ensure their beauty lasts for generations.",
-    image: "/images/products/prod-ada-cherry-red/63937eb0-57f7-4d07-a0b5-a9339c0d0228.jpg",
+    image: "/images/products/prod-ada-cherry-red/prod-ada-cherry-red-01.png",
   },
   {
     id: 3,
@@ -55,7 +55,7 @@ const INITIAL_ARTICLES: Article[] = [
     category: "Style Guide",
     date: "May 14, 2026",
     excerpt: "How to select versatile contemporary silhouettes and co-ord sets that transcend seasonal trends.",
-    image: "/images/products/prod-naira-black/32f22b79-583c-4863-9d0a-ab930c12845c.jpg",
+    image: "/images/products/prod-naira-black/prod-naira-black-01.png",
   },
 ];
 

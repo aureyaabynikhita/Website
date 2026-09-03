@@ -143,6 +143,8 @@ export default async function ProductPage({ params }: PageProps) {
       ? "Drape Sarees"
       : product.categoryId === "cat-drape-skirts"
       ? "Drape Skirts"
+      : product.categoryId === "cat-indo-western"
+      ? "Indo-Western"
       : product.categoryId.replace("cat-", "");
 
   const categorySlug = product.categoryId.replace("cat-", "");

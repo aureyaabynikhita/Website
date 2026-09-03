@@ -20,7 +20,7 @@ export function ProductGallery({ images, videoUrl, title }: ProductGalleryProps)
 
   const media = [
     ...images.map((url) => ({ type: "image" as const, url })),
-    ...(videoUrl ? [{ type: "video" as const, url: videoUrl }] : []),
+    ...(videoUrl && videoUrl.trim() ? [{ type: "video" as const, url: videoUrl }] : []),
   ];
 
   const activeMedia = media[active] || { type: "image" as const, url: "/images/placeholder-1.jpg" };
